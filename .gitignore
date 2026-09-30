@@ -1,0 +1,40 @@
+# Node & Angular
+**/node_modules/
+node_modules/
+**/.angular/
+.angular/
+**/dist/
+dist/
+.npm/
+
+# Java & Maven
+**/target/
+target/
+*.class
+*.jar
+!**/mvnw
+!**/.mvn/wrapper/*.jar
+*.war
+*.ear
+*.log
+
+# H2 Database files
+**/data/
+data/
+*.mv.db
+*.trace.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE & OS
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+Thumbs.db
+desktop.ini
