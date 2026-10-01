@@ -10,11 +10,92 @@ import {
 } from './mock-data';
 import { AuthResponse, Role, InteractionCheckResult, DashboardStats } from '../models/ehr.models';
 
+const STORAGE_KEY_USERS = 'careconnect_registered_users';
 const STORAGE_KEY_PATIENTS = 'careconnect_mock_patients';
 const STORAGE_KEY_VITALS = 'careconnect_mock_vitals';
 const STORAGE_KEY_ENCOUNTERS = 'careconnect_mock_encounters';
 const STORAGE_KEY_ORDERS = 'careconnect_mock_orders';
 const STORAGE_KEY_PRESCRIPTIONS = 'careconnect_mock_prescriptions';
+
+interface StoredUser {
+  id: number;
+  username: string;
+  password: string;
+  fullName: string;
+  email: string;
+  role: Role;
+  patientId?: number;
+  specialization?: string;
+  licenseNumber?: string;
+}
+
+const DEFAULT_USERS: StoredUser[] = [
+  {
+    id: 7,
+    username: 'priyank',
+    password: 'Password@123',
+    fullName: 'Dr. Priyank',
+    email: 'priyank132021@gmail.com',
+    role: 'ROLE_DOCTOR',
+    specialization: 'General Physician',
+    licenseNumber: 'DOC-PRIYANK-2026'
+  },
+  {
+    id: 1,
+    username: 'admin',
+    password: 'Admin@123',
+    fullName: 'System Administrator',
+    email: 'admin@careconnect.io',
+    role: 'ROLE_ADMIN'
+  },
+  {
+    id: 2,
+    username: 'dr.sharma',
+    password: 'Doctor@123',
+    fullName: 'Dr. Rajesh Sharma, MD',
+    email: 'rsharma@careconnect.io',
+    role: 'ROLE_DOCTOR',
+    specialization: 'Cardiology',
+    licenseNumber: 'MCI-CARD-44109'
+  },
+  {
+    id: 3,
+    username: 'dr.patel',
+    password: 'Doctor@123',
+    fullName: 'Dr. Sneha Patel, MD',
+    email: 'spatel@careconnect.io',
+    role: 'ROLE_DOCTOR',
+    specialization: 'Internal Medicine',
+    licenseNumber: 'MCI-INT-55291'
+  },
+  {
+    id: 4,
+    username: 'nurse.priya',
+    password: 'Nurse@123',
+    fullName: 'Nurse Priya Nair, BSN',
+    email: 'pnair@careconnect.io',
+    role: 'ROLE_NURSE',
+    licenseNumber: 'INC-RN-88123'
+  },
+  {
+    id: 5,
+    username: 'patient.rohit',
+    password: 'Patient@123',
+    fullName: 'Rohit Verma',
+    email: 'rohit.verma@example.com',
+    role: 'ROLE_PATIENT',
+    patientId: 1
+  },
+  {
+    id: 6,
+    username: 'patient.ananya',
+    password: 'Patient@123',
+    fullName: 'Ananya Deshmukh',
+    email: 'ananya.d@example.com',
+    role: 'ROLE_PATIENT',
+    patientId: 2
+  }
+];
 
 function getStored<T>(key: string, fallback: T): T {
   const data = localStorage.getItem(key);
@@ -38,7 +119,6 @@ export const mockFallbackInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err: HttpErrorResponse) => {
       // If network error (status 0: Mixed Content, PNA blocked, server offline, or failed to fetch):
       if (err.status === 0 || err.status === 504 || err.message?.includes('Failed to fetch')) {
-        console.warn(`[CareConnect Fallback] Backend unreachable (${err.message}). Using local demo engine for: ${req.url}`);
         return handleMock(req);
       }
       return throwError(() => err);
@@ -50,65 +130,138 @@ function handleMock(req: any) {
   const url = req.url;
   const method = req.method;
 
-  // 1. AUTH: Login
+  // 1. AUTH: Login (Strict Credentials Check)
   if (url.includes('/api/auth/login') && method === 'POST') {
     const body = req.body || {};
-    const inputUser = (body.username || 'priyank').trim();
-    let role: Role = 'ROLE_DOCTOR';
-    let fullName = 'Dr. Priyank';
+    const inputUser = (body.username || '').trim().toLowerCase();
+    const inputPass = body.password || '';
 
-    const lower = inputUser.toLowerCase();
-    if (lower.includes('admin')) {
-      role = 'ROLE_ADMIN';
-      fullName = 'System Administrator';
-    } else if (lower.includes('nurse')) {
-      role = 'ROLE_NURSE';
-      fullName = 'Nurse Priya Nair, BSN';
-    } else if (lower.includes('patient') || lower.includes('rohit')) {
-      role = 'ROLE_PATIENT';
-      fullName = 'Rohit Verma';
-    } else if (lower.includes('sharma')) {
-      role = 'ROLE_DOCTOR';
-      fullName = 'Dr. Rajesh Sharma, MD';
-    } else if (lower.includes('priyank')) {
-      role = 'ROLE_DOCTOR';
-      fullName = 'Dr. Priyank';
-    } else {
-      fullName = inputUser.charAt(0).toUpperCase() + inputUser.slice(1);
+    const users = getStored<StoredUser[]>(STORAGE_KEY_USERS, DEFAULT_USERS);
+
+    // Find user by username or email or full name (case-insensitive)
+    const foundUser = users.find(u => 
+      u.username.toLowerCase() === inputUser ||
+      u.email.toLowerCase() === inputUser ||
+      u.fullName.toLowerCase() === inputUser ||
+      u.username.toLowerCase() === inputUser.replace(/\s+/g, '.')
+    );
+
+    // If user does not exist in database:
+    if (!foundUser) {
+      return throwError(() => new HttpErrorResponse({
+        status: 404,
+        error: {
+          error: 'USER_NOT_FOUND',
+          message: `User '${body.username}' is not registered in database. Please Sign Up first!`
+        }
+      }));
     }
 
+    // If user exists, but password is wrong:
+    if (foundUser.password !== inputPass) {
+      return throwError(() => new HttpErrorResponse({
+        status: 401,
+        error: {
+          error: 'BAD_CREDENTIALS',
+          message: 'Incorrect password! If you forgot it, click "Reset Password" below.'
+        }
+      }));
+    }
+
+    // Successful Login
     const mockResponse: AuthResponse = {
       token: 'mock-jwt-token-' + Date.now(),
       type: 'Bearer',
-      id: 7,
-      username: inputUser,
-      fullName: fullName,
-      email: `${lower.replace(/\s+/g, '.')}@careconnect.io`,
-      role: role,
-      patientId: role === 'ROLE_PATIENT' ? 1 : undefined
+      id: foundUser.id,
+      username: foundUser.username,
+      fullName: foundUser.fullName,
+      email: foundUser.email,
+      role: foundUser.role,
+      patientId: foundUser.patientId
     };
 
     return of(new HttpResponse({ status: 200, body: mockResponse }));
   }
 
-  // 2. AUTH: Register
+  // 2. AUTH: Register (Create New User Account)
   if (url.includes('/api/auth/register') && method === 'POST') {
     const body = req.body || {};
+    const regUsername = (body.username || '').trim().toLowerCase().replace(/\s+/g, '.');
+    const regEmail = (body.email || '').trim().toLowerCase();
+
+    const users = getStored<StoredUser[]>(STORAGE_KEY_USERS, DEFAULT_USERS);
+
+    // Check duplicate username
+    if (users.some(u => u.username.toLowerCase() === regUsername)) {
+      return throwError(() => new HttpErrorResponse({
+        status: 400,
+        error: {
+          error: 'BAD_REQUEST',
+          message: `Username '${regUsername}' is already taken`
+        }
+      }));
+    }
+
+    // Check duplicate email
+    if (users.some(u => u.email.toLowerCase() === regEmail)) {
+      return throwError(() => new HttpErrorResponse({
+        status: 400,
+        error: {
+          error: 'BAD_REQUEST',
+          message: `Email '${regEmail}' is already registered`
+        }
+      }));
+    }
+
+    // Save new user
+    const newUser: StoredUser = {
+      id: Date.now(),
+      username: regUsername,
+      password: body.password,
+      fullName: body.fullName || regUsername,
+      email: regEmail,
+      role: body.role || 'ROLE_DOCTOR',
+      specialization: body.specialization,
+      licenseNumber: body.licenseNumber,
+      patientId: body.role === 'ROLE_PATIENT' ? Date.now() : undefined
+    };
+
+    users.push(newUser);
+    setStored(STORAGE_KEY_USERS, users);
+
     const mockResponse: AuthResponse = {
       token: 'mock-jwt-token-' + Date.now(),
       type: 'Bearer',
-      id: 99,
-      username: body.username || 'new.user',
-      fullName: body.fullName || 'New User',
-      email: body.email || 'user@example.com',
-      role: body.role || 'ROLE_DOCTOR',
-      patientId: body.patientId
+      id: newUser.id,
+      username: newUser.username,
+      fullName: newUser.fullName,
+      email: newUser.email,
+      role: newUser.role,
+      patientId: newUser.patientId
     };
+
     return of(new HttpResponse({ status: 200, body: mockResponse }));
   }
 
   // 3. AUTH: Reset Password
   if (url.includes('/api/auth/reset-password') && method === 'POST') {
+    const body = req.body || {};
+    const username = (body.username || '').trim().toLowerCase();
+    const newPassword = body.newPassword;
+
+    const users = getStored<StoredUser[]>(STORAGE_KEY_USERS, DEFAULT_USERS);
+    const user = users.find(u => u.username.toLowerCase() === username || u.email.toLowerCase() === username);
+
+    if (!user) {
+      return throwError(() => new HttpErrorResponse({
+        status: 404,
+        error: { message: `Username '${username}' not found` }
+      }));
+    }
+
+    user.password = newPassword;
+    setStored(STORAGE_KEY_USERS, users);
+
     return of(new HttpResponse({ status: 200, body: { message: 'Password updated successfully!' } }));
   }
 
@@ -330,6 +483,5 @@ function handleMock(req: any) {
     return of(new HttpResponse({ status: 200, body: logs }));
   }
 
-  // Default Fallback
   return of(new HttpResponse({ status: 200, body: [] }));
 }
