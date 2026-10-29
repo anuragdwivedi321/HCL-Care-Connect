@@ -308,34 +308,39 @@ code, pre {
     color: var(--slate-700);
     letter-spacing: -0.01em;
   }
+}
 
-  .form-control, select, textarea {
-    width: 100%;
-    padding: 0.7rem 0.95rem;
-    font-size: 0.9rem;
-    font-family: inherit;
-    border: 1.5px solid var(--slate-300);
-    border-radius: var(--radius-md);
+.form-control, select.form-control, textarea.form-control, input.form-control {
+  width: 100%;
+  display: block;
+  padding: 0.7rem 0.95rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1.5px solid var(--slate-300);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  color: var(--slate-900);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &::placeholder {
+    color: var(--slate-400);
+  }
+
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3.5px rgba(2, 132, 199, 0.15);
     background-color: #ffffff;
-    color: var(--slate-900);
-    outline: none;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-
-    &::placeholder {
-      color: var(--slate-400);
-    }
-
-    &:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3.5px rgba(2, 132, 199, 0.15);
-      background-color: #ffffff;
-    }
   }
+}
 
-  textarea {
-    resize: vertical;
-    min-height: 85px;
-  }
+textarea.form-control, textarea {
+  resize: vertical;
+  min-height: 95px;
+  line-height: 1.5;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 /* Responsive Table */
