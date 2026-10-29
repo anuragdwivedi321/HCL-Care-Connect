@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { EhrService } from '../../services/ehr.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
@@ -9,7 +10,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   template: `
     <div class="dashboard-page">
       <!-- Welcome Hero Banner -->
@@ -17,13 +18,13 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="header-left">
           <div class="shift-pill">
             <span class="pulse-green"></span>
-            <span>CLINICAL SHIFT ACTIVE • OPD BLOCK B</span>
+            <span>CLINICAL SHIFT ACTIVE • OPD BLOCK B • STATION #04</span>
           </div>
           <h1 class="welcome-heading">
             {{ getGreeting() }}, <span class="provider-highlight">{{ authService.currentUser()?.fullName }}</span>
           </h1>
           <p class="subtitle">
-            Enterprise Electronic Health Record System • Real-Time Clinical Queue & Telemetry.
+            Enterprise Electronic Health Record System • Real-Time Clinical Queue & Hospital Telemetry.
           </p>
         </div>
 
@@ -31,14 +32,14 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
           <div class="time-box">
             <div class="live-clock-badge">
               <span class="live-pulse-dot"></span>
-              <span class="live-label">LIVE SYSTEM TIME</span>
+              <span class="live-label">LIVE SYSTEM TELEMETRY</span>
             </div>
             <div class="time-val">{{ currentTime }}</div>
             <div class="date-val">{{ currentDate }}</div>
           </div>
           <div class="action-buttons">
             <a routerLink="/patients" class="btn btn-secondary">
-              <span>👥</span> Patient Directory
+              <span>👥</span> Directory
             </a>
             <a routerLink="/clinical-notes" class="btn btn-primary">
               <span>✍️</span> New SOAP Note
@@ -51,8 +52,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       <div class="telemetry-bar card">
         <div class="telemetry-item">
           <div class="telemetry-info">
-            <span class="telemetry-label">Hospital Bed Occupancy</span>
-            <span class="telemetry-pct">74%</span>
+            <span class="telemetry-label">
+              <span class="t-icon">🏥</span> Hospital Bed Occupancy
+            </span>
+            <span class="telemetry-pct">74% Capacity</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill fill-blue" style="width: 74%"></div>
@@ -61,8 +64,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
 
         <div class="telemetry-item">
           <div class="telemetry-info">
-            <span class="telemetry-label">Lab Turnaround Time (TAT)</span>
-            <span class="telemetry-pct">96.8%</span>
+            <span class="telemetry-label">
+              <span class="t-icon">⚡</span> Lab Turnaround TAT
+            </span>
+            <span class="telemetry-pct">96.8% On-Time</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill fill-teal" style="width: 96.8%"></div>
@@ -71,7 +76,9 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
 
         <div class="telemetry-item">
           <div class="telemetry-info">
-            <span class="telemetry-label">Drug Interaction Safety Score</span>
+            <span class="telemetry-label">
+              <span class="t-icon">🛡️</span> DDI Safety Score
+            </span>
             <span class="telemetry-pct">100% Guarded</span>
           </div>
           <div class="progress-track">
@@ -157,7 +164,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       <div class="quick-nav card">
         <div class="quick-nav-header">
           <span class="quick-nav-title">CareConnect Accelerated Clinical Workflows</span>
-          <span class="badge badge-neutral">Shortcuts</span>
+          <span class="badge badge-neutral">Quick Actions</span>
         </div>
         <div class="quick-buttons">
           <a routerLink="/cpoe-orders" class="quick-btn">
@@ -205,9 +212,18 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
           <div class="card-header">
             <div>
               <h3><span>👥</span> Recent Patient Directory</h3>
-              <p class="text-sub">Patients scheduled for evaluation and ongoing care.</p>
+              <p class="text-sub">Patients scheduled for evaluation and ongoing inpatient/outpatient care.</p>
             </div>
-            <a routerLink="/patients" class="btn btn-secondary btn-sm">View All ({{ patients.length }})</a>
+            <div class="header-actions">
+              <input 
+                type="text" 
+                class="quick-search-input" 
+                placeholder="Filter patients..." 
+                [(ngModel)]="patientSearchQuery"
+                (input)="filterDashboardPatients()"
+              />
+              <a routerLink="/patients" class="btn btn-secondary btn-sm">View All ({{ allPatients.length }})</a>
+            </div>
           </div>
 
           <div class="table-responsive">
@@ -222,13 +238,13 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let p of patients">
+                <tr *ngFor="let p of displayedPatients">
                   <td>
                     <div class="patient-cell">
                       <div class="patient-avatar-mini">{{ (p.firstName || 'P').charAt(0) }}{{ (p.lastName || '').charAt(0) }}</div>
                       <div>
                         <strong>{{ p.firstName }} {{ p.lastName || '' }}</strong>
-                        <div class="text-sub" *ngIf="p.bloodGroup">Blood: {{ p.bloodGroup }}</div>
+                        <div class="text-sub" *ngIf="p.bloodGroup">Blood: <span class="blood-chip">{{ p.bloodGroup }}</span></div>
                       </div>
                     </div>
                   </td>
@@ -246,8 +262,8 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
                     </a>
                   </td>
                 </tr>
-                <tr *ngIf="patients.length === 0">
-                  <td colspan="5" class="empty-state">No patients available in the index.</td>
+                <tr *ngIf="displayedPatients.length === 0">
+                  <td colspan="5" class="empty-state">No matching patient records found.</td>
                 </tr>
               </tbody>
             </table>
@@ -292,9 +308,9 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
   `,
   styles: [`
     .dashboard-page {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      padding: 0 1.75rem;
     }
 
     /* Welcome Hero Header */
@@ -304,9 +320,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       align-items: center;
       margin-bottom: 1.5rem;
       background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--slate-200);
       position: relative;
       overflow: hidden;
+      border-radius: var(--radius-lg);
 
       &::before {
         content: '';
@@ -327,10 +344,11 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       font-weight: 800;
       color: #0369a1;
       background: #e0f2fe;
-      padding: 0.25rem 0.75rem;
+      padding: 0.28rem 0.85rem;
       border-radius: 20px;
       margin-bottom: 0.5rem;
       letter-spacing: 0.05em;
+      border: 1px solid rgba(2, 132, 199, 0.2);
     }
 
     .pulse-green {
@@ -390,7 +408,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       color: #047857;
       background: #ecfdf5;
       border: 1px solid #a7f3d0;
-      padding: 0.15rem 0.5rem;
+      padding: 0.18rem 0.55rem;
       border-radius: 12px;
       margin-bottom: 0.35rem;
       letter-spacing: 0.05em;
@@ -435,7 +453,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
-      padding: 1.15rem 1.5rem;
+      padding: 1.25rem 1.75rem;
       margin-bottom: 1.5rem;
       background: white;
     }
@@ -444,19 +462,23 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.4rem;
-      font-size: 0.8rem;
+      margin-bottom: 0.45rem;
+      font-size: 0.82rem;
     }
 
     .telemetry-label {
-      color: #64748b;
+      color: #475569;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
 
     .telemetry-pct {
       font-weight: 800;
       color: #0f172a;
       font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
     }
 
     .progress-track {
@@ -480,7 +502,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
     /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
       gap: 1.15rem;
       margin-bottom: 1.5rem;
     }
@@ -490,13 +512,13 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       padding: 1.35rem 1.25rem;
       overflow: hidden;
       border-radius: 16px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--slate-200);
       background: white;
-      transition: all 0.25s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
+        box-shadow: 0 12px 28px -4px rgba(2, 132, 199, 0.15);
         border-color: #38bdf8;
       }
 
@@ -505,7 +527,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
         &:hover {
           border-color: #ef4444;
-          box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2);
+          box-shadow: 0 12px 28px -4px rgba(239, 68, 68, 0.2);
         }
       }
     }
@@ -534,7 +556,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
     }
 
     .stat-value {
-      font-size: 2.25rem;
+      font-size: 2.35rem;
       font-weight: 800;
       color: #0f172a;
       line-height: 1;
@@ -565,7 +587,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
     .quick-nav {
       margin-bottom: 1.5rem;
       background: white;
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--slate-200);
       padding: 1.35rem;
 
       .quick-nav-header {
@@ -599,12 +621,12 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         padding: 0.95rem 1.15rem;
         text-decoration: none;
         color: #1e293b;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
         &:hover {
           background: white;
           border-color: #0284c7;
-          box-shadow: 0 8px 20px rgba(2, 132, 199, 0.12);
+          box-shadow: 0 8px 22px rgba(2, 132, 199, 0.12);
           transform: translateY(-2px);
 
           .q-arrow {
@@ -614,13 +636,13 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         }
 
         .q-icon-box {
-          width: 42px;
-          height: 42px;
-          border-radius: 10px;
+          width: 44px;
+          height: 44px;
+          border-radius: 11px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.35rem;
+          font-size: 1.4rem;
           flex-shrink: 0;
 
           &.q-lab { background: #e0f2fe; }
@@ -642,7 +664,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
             display: block;
             font-size: 0.75rem;
             color: #64748b;
-            line-height: 1.3;
+            line-height: 1.35;
             margin-top: 0.15rem;
           }
         }
@@ -671,12 +693,36 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.15rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
 
         h3 {
           font-size: 1.15rem;
           display: flex;
           align-items: center;
           gap: 0.5rem;
+        }
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .quick-search-input {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+        border: 1px solid var(--slate-300);
+        border-radius: 8px;
+        outline: none;
+        width: 160px;
+        transition: all 0.2s ease;
+
+        &:focus {
+          border-color: #0284c7;
+          width: 200px;
+          box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
       }
     }
@@ -688,17 +734,23 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
     }
 
     .patient-avatar-mini {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: linear-gradient(135deg, #0284c7, #0d9488);
       color: white;
-      font-weight: 700;
-      font-size: 0.75rem;
+      font-weight: 800;
+      font-size: 0.78rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
+
+    .blood-chip {
+      color: #b91c1c;
+      font-weight: 700;
     }
 
     .font-mono {
@@ -739,15 +791,15 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
 
     .order-item {
       border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      padding: 0.95rem 1.1rem;
       background: #f8fafc;
       transition: all 0.2s ease;
 
       &:hover {
         background: white;
         border-color: #cbd5e1;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
       }
 
       &.abnormal-item {
@@ -876,8 +928,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   stats: DashboardStats | null = null;
-  patients: Patient[] = [];
+  allPatients: Patient[] = [];
+  displayedPatients: Patient[] = [];
   orders: MedicalOrder[] = [];
+  patientSearchQuery = '';
   currentTime = '';
   currentDate = '';
   private timerId: any = null;
@@ -935,7 +989,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.ehrService.getPatients().subscribe({
-      next: (p) => (this.patients = p.slice(0, 5)),
+      next: (p) => {
+        this.allPatients = p;
+        this.filterDashboardPatients();
+      },
       error: (e) => console.error('Error fetching patients', e)
     });
 
@@ -943,6 +1000,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (o) => (this.orders = o.slice(0, 5)),
       error: (e) => console.error('Error fetching orders', e)
     });
+  }
+
+  filterDashboardPatients(): void {
+    if (!this.patientSearchQuery.trim()) {
+      this.displayedPatients = this.allPatients.slice(0, 6);
+      return;
+    }
+    const q = this.patientSearchQuery.toLowerCase().trim();
+    this.displayedPatients = this.allPatients
+      .filter(p => 
+        (p.firstName && p.firstName.toLowerCase().includes(q)) ||
+        (p.lastName && p.lastName.toLowerCase().includes(q)) ||
+        (p.mrn && p.mrn.toLowerCase().includes(q)) ||
+        (p.phone && p.phone.includes(q))
+      )
+      .slice(0, 6);
   }
 
   calculateAge(dob: string): number {

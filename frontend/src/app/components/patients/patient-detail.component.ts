@@ -19,16 +19,18 @@ import {
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
     <div class="patient-detail-page">
-      <!-- Back Navigation -->
+      <!-- Back Navigation Breadcrumb -->
       <div class="top-nav">
-        <a routerLink="/patients" class="back-link">← Back to Patient Directory</a>
+        <a routerLink="/patients" class="back-link">
+          <span>←</span> Back to Patient Master Index
+        </a>
       </div>
 
       <!-- Loading State -->
       <div class="card detail-state-card" *ngIf="loading">
         <div class="detail-spinner"></div>
-        <h3>Opening Patient Medical Chart...</h3>
-        <p class="text-sub">Retrieving clinical record, vitals flowsheet, orders, and documentation.</p>
+        <h3>Retrieving Electronic Health Record...</h3>
+        <p class="text-sub">Loading clinical chart, historical flowsheet, CPOE orders, and documentation.</p>
       </div>
 
       <!-- Error State -->
@@ -36,7 +38,7 @@ import {
         <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
         <h3>Medical Chart Not Found</h3>
         <p class="text-sub" style="margin-bottom: 1.25rem;">{{ errorMessage }}</p>
-        <a routerLink="/patients" class="btn btn-primary btn-sm">← Return to Patient Master Index</a>
+        <a routerLink="/patients" class="btn btn-primary btn-sm">← Return to Patient Directory</a>
       </div>
 
       <!-- Patient Content When Loaded -->
@@ -53,7 +55,7 @@ import {
               <span class="badge badge-teal" *ngIf="patient.bloodGroup">Blood: {{ patient.bloodGroup }}</span>
             </div>
             <div class="demographics-line">
-              <span>{{ calculateAge(patient.dateOfBirth) }} yrs</span> •
+              <span><strong>{{ calculateAge(patient.dateOfBirth) }} yrs</strong></span> •
               <span>{{ patient.gender }}</span> •
               <span>DOB: {{ patient.dateOfBirth }}</span> •
               <span>📞 {{ patient.phone || 'No phone' }}</span> •
@@ -65,12 +67,12 @@ import {
         <!-- Clinical Safety Indicators -->
         <div class="safety-alerts">
           <div class="alert-box allergy-box">
-            <span class="alert-title">⚠️ ALLERGIES</span>
+            <span class="alert-title">⚠️ DOCUMENTED ALLERGIES</span>
             <span class="alert-content">{{ patient.allergies || 'No Known Drug Allergies (NKDA)' }}</span>
           </div>
           <div class="alert-box conditions-box">
             <span class="alert-title">🩺 CHRONIC PROBLEMS</span>
-            <span class="alert-content">{{ patient.chronicConditions || 'None documented' }}</span>
+            <span class="alert-content">{{ patient.chronicConditions || 'None documented on chart' }}</span>
           </div>
         </div>
       </div>
@@ -78,7 +80,7 @@ import {
       <!-- Clinical Chart Tabs -->
       <div class="chart-tabs">
         <button [class.active]="activeTab === 'summary'" (click)="activeTab = 'summary'" class="tab-btn">
-          <span>📋</span> Demographics & Info
+          <span>📋</span> Demographics & Policy
         </button>
         <button [class.active]="activeTab === 'vitals'" (click)="activeTab = 'vitals'" class="tab-btn">
           <span>🩺</span> Vitals Flowsheet ({{ vitals.length }})
@@ -90,7 +92,7 @@ import {
           <span>🔬</span> CPOE Orders ({{ orders.length }})
         </button>
         <button [class.active]="activeTab === 'meds'" (click)="activeTab = 'meds'" class="tab-btn">
-          <span>💊</span> Medications ({{ prescriptions.length }})
+          <span>💊</span> E-Prescriptions ({{ prescriptions.length }})
         </button>
       </div>
 
@@ -101,42 +103,42 @@ import {
             <h3>Contact & Emergency Details</h3>
             <div class="info-list">
               <div class="info-item">
-                <span class="label">Full Address</span>
+                <span class="label">Full Residential Address</span>
                 <span class="val">{{ patient.address || '—' }}, {{ patient.city }}, {{ patient.state }} {{ patient.postalCode }}</span>
               </div>
               <div class="info-item">
-                <span class="label">Email</span>
+                <span class="label">Email Address</span>
                 <span class="val">{{ patient.email || '—' }}</span>
               </div>
               <div class="info-item">
                 <span class="label">Emergency Contact</span>
-                <span class="val">{{ patient.emergencyContactName || '—' }} ({{ patient.emergencyContactRelationship || 'Relative' }})</span>
+                <span class="val">{{ patient.emergencyContactName || '—' }} ({{ patient.emergencyContactRelationship || 'Next of Kin' }})</span>
               </div>
               <div class="info-item">
-                <span class="label">Emergency Phone</span>
+                <span class="label">Emergency Contact Phone</span>
                 <span class="val">{{ patient.emergencyContactPhone || '—' }}</span>
               </div>
             </div>
           </div>
 
           <div class="card">
-            <h3>Insurance & Policy</h3>
+            <h3>Insurance & Healthcare Policy</h3>
             <div class="info-list">
               <div class="info-item">
                 <span class="label">Insurance Payer</span>
-                <span class="val">{{ patient.insuranceProvider || 'Self-Pay / Cash' }}</span>
+                <span class="val">{{ patient.insuranceProvider || 'Self-Pay / Cash Healthcare' }}</span>
               </div>
               <div class="info-item">
                 <span class="label">Policy / Member ID</span>
                 <span class="val">{{ patient.policyNumber || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="label">Registration Date</span>
+                <span class="label">First Registered At</span>
                 <span class="val">{{ patient.createdAt | date:'medium' }}</span>
               </div>
               <div class="info-item">
-                <span class="label">Electronic Record ID</span>
-                <span class="val">#CC-EHR-{{ patient.id }}</span>
+                <span class="label">Internal EHR Record ID</span>
+                <span class="val font-mono">#CC-PT-{{ patient.id }}</span>
               </div>
             </div>
           </div>
@@ -145,29 +147,58 @@ import {
 
       <!-- Tab Content 2: Vitals -->
       <div *ngIf="activeTab === 'vitals'" class="tab-content">
-        <div class="section-actions mb-3">
-          <button (click)="openVitalsModal()" class="btn btn-primary btn-sm">
-            <span>➕</span> Record New Vitals
-          </button>
+        <!-- Latest Vital Telemetry HUD -->
+        <div class="latest-vitals-grid" *ngIf="vitals.length > 0">
+          <div class="vital-hud-card" [class.hud-alert]="isBpAbnormal(vitals[0])">
+            <div class="hud-top">
+              <span class="hud-icon">🩺</span>
+              <span class="hud-tag">Blood Pressure</span>
+            </div>
+            <div class="hud-val">{{ vitals[0].systolicBP }}/{{ vitals[0].diastolicBP }} <small>mmHg</small></div>
+            <div class="hud-status" [ngClass]="getBpStatusClass(vitals[0])">{{ getBpStatus(vitals[0]) }}</div>
+          </div>
+
+          <div class="vital-hud-card" [class.hud-alert]="isHrAbnormal(vitals[0])">
+            <div class="hud-top">
+              <span class="hud-icon">💓</span>
+              <span class="hud-tag">Heart Rate</span>
+            </div>
+            <div class="hud-val">{{ vitals[0].heartRate }} <small>bpm</small></div>
+            <div class="hud-status">{{ vitals[0].heartRate! > 100 ? 'Tachycardia' : (vitals[0].heartRate! < 60 ? 'Bradycardia' : 'Normal Sinus') }}</div>
+          </div>
+
+          <div class="vital-hud-card" [class.hud-alert]="(vitals[0].oxygenSaturation || 100) < 95">
+            <div class="hud-top">
+              <span class="hud-icon">🫁</span>
+              <span class="hud-tag">Oxygen Sat (SpO2)</span>
+            </div>
+            <div class="hud-val">{{ vitals[0].oxygenSaturation }} <small>%</small></div>
+            <div class="hud-status">{{ (vitals[0].oxygenSaturation || 100) >= 95 ? 'Optimal Room Air' : 'Hypoxia Alert' }}</div>
+          </div>
+
+          <div class="vital-hud-card" [class.hud-alert]="(vitals[0].temperature || 37) > 37.8">
+            <div class="hud-top">
+              <span class="hud-icon">🌡️</span>
+              <span class="hud-tag">Temperature</span>
+            </div>
+            <div class="hud-val">{{ vitals[0].temperature }} <small>°C</small></div>
+            <div class="hud-status">{{ (vitals[0].temperature || 37) > 37.8 ? 'Febrile / Pyrexia' : 'Normothermic' }}</div>
+          </div>
+
+          <div class="vital-hud-card">
+            <div class="hud-top">
+              <span class="hud-icon">⚖️</span>
+              <span class="hud-tag">Body Mass Index</span>
+            </div>
+            <div class="hud-val">{{ vitals[0].bmi }} <small>kg/m²</small></div>
+            <div class="hud-status">{{ getBmiLabel(vitals[0].bmi) }}</div>
+          </div>
         </div>
 
-        <!-- BMI Spectrum Visualizer -->
-        <div class="bmi-spectrum-card card mb-3" *ngIf="vitals.length > 0">
-          <div class="bmi-header-row">
-            <div>
-              <div class="bmi-title"><span>⚖️</span> Body Mass Index (BMI) Clinical Spectrum</div>
-              <p class="text-sub">World Health Organization (WHO) adult weight classification based on latest vitals flowsheet.</p>
-            </div>
-            <div class="bmi-current-pill" [ngClass]="getBmiClass(vitals[0].bmi)">
-              Latest BMI: <strong>{{ vitals[0].bmi }}</strong> ({{ getBmiLabel(vitals[0].bmi) }})
-            </div>
-          </div>
-          <div class="bmi-spectrum-bar">
-            <div class="bmi-segment seg-under" [class.highlight]="(vitals[0].bmi || 0) < 18.5">Underweight (&lt;18.5)</div>
-            <div class="bmi-segment seg-normal" [class.highlight]="(vitals[0].bmi || 0) >= 18.5 && (vitals[0].bmi || 0) < 25">Normal (18.5 - 24.9)</div>
-            <div class="bmi-segment seg-over" [class.highlight]="(vitals[0].bmi || 0) >= 25 && (vitals[0].bmi || 0) < 30">Overweight (25 - 29.9)</div>
-            <div class="bmi-segment seg-obese" [class.highlight]="(vitals[0].bmi || 0) >= 30">Obese (30+)</div>
-          </div>
+        <div class="section-actions mb-3">
+          <button (click)="openVitalsModal()" class="btn btn-primary btn-sm">
+            <span>➕</span> Record New Vitals Flowsheet
+          </button>
         </div>
 
         <div class="card">
@@ -175,27 +206,31 @@ import {
             <table class="ehr-table">
               <thead>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>Recorded Time</th>
                   <th>Blood Pressure</th>
-                  <th>Pulse</th>
+                  <th>Pulse / HR</th>
                   <th>Resp Rate</th>
                   <th>Temp</th>
                   <th>SpO2</th>
-                  <th>BMI / Weight</th>
-                  <th>Recorded By</th>
+                  <th>BMI & Weight</th>
+                  <th>Clinician</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let v of vitals">
                   <td>{{ v.recordedAt | date:'medium' }}</td>
                   <td>
-                    <strong [class.text-danger]="(v.systolicBP || 0) > 135 || (v.diastolicBP || 0) > 85">
-                      {{ v.systolicBP }}/{{ v.diastolicBP }}
-                    </strong> mmHg
+                    <strong [class.text-danger]="isBpAbnormal(v)">
+                      {{ v.systolicBP }}/{{ v.diastolicBP }} mmHg
+                    </strong>
                   </td>
-                  <td>{{ v.heartRate }} bpm</td>
+                  <td>
+                    <span [class.text-danger]="isHrAbnormal(v)">{{ v.heartRate }} bpm</span>
+                  </td>
                   <td>{{ v.respiratoryRate }} /min</td>
-                  <td>{{ v.temperature }} °C</td>
+                  <td>
+                    <span [class.text-danger]="(v.temperature || 37) > 37.8">{{ v.temperature }}°C</span>
+                  </td>
                   <td>
                     <span [class.text-danger]="(v.oxygenSaturation || 100) < 95">{{ v.oxygenSaturation }}%</span>
                   </td>
@@ -231,7 +266,7 @@ import {
                 </span>
                 <span class="enc-date">{{ e.encounterDate | date:'medium' }}</span>
               </div>
-              <div class="enc-provider">Provider: <strong>{{ e.providerName }}</strong></div>
+              <div class="enc-provider">Attending Provider: <strong>{{ e.providerName }}</strong></div>
             </div>
 
             <div class="enc-complaint">
@@ -241,28 +276,28 @@ import {
             <!-- SOAP Structure -->
             <div class="soap-grid">
               <div class="soap-col soap-s">
-                <div class="soap-heading">S (Subjective)</div>
+                <div class="soap-heading">S • Subjective</div>
                 <p>{{ e.soapSubjective || 'No subjective narrative recorded.' }}</p>
               </div>
               <div class="soap-col soap-o">
-                <div class="soap-heading">O (Objective)</div>
+                <div class="soap-heading">O • Objective</div>
                 <p>{{ e.soapObjective || 'No objective findings recorded.' }}</p>
               </div>
               <div class="soap-col soap-a">
-                <div class="soap-heading">A (Assessment & ICD-10)</div>
+                <div class="soap-heading">A • Assessment & ICD-10</div>
                 <p>{{ e.soapAssessment || 'No assessment recorded.' }}</p>
                 <div *ngIf="e.icd10Codes" class="icd-tags">
                   <span class="icd-tag" *ngFor="let code of splitCodes(e.icd10Codes)">{{ code }}</span>
                 </div>
               </div>
               <div class="soap-col soap-p">
-                <div class="soap-heading">P (Plan)</div>
+                <div class="soap-heading">P • Plan</div>
                 <p>{{ e.soapPlan || 'No therapeutic plan recorded.' }}</p>
               </div>
             </div>
 
             <div class="enc-footer" *ngIf="e.signedBy">
-              <span>✍️ Digitally Signed by <strong>{{ e.signedBy }}</strong> on {{ e.signedAt | date:'medium' }}</span>
+              <span>✍️ Digitally Signed & Locked by <strong>{{ e.signedBy }}</strong> on {{ e.signedAt | date:'medium' }}</span>
             </div>
             <div class="enc-footer" *ngIf="!e.signedBy && authService.isDoctor()">
               <button (click)="signNote(e.id!)" class="btn btn-teal btn-sm">
@@ -314,7 +349,7 @@ import {
                       {{ o.priority }}
                     </span>
                   </td>
-                  <td><code>{{ o.loincCode || '—' }}</code></td>
+                  <td><code class="font-mono">{{ o.loincCode || '—' }}</code></td>
                   <td>
                     <span class="badge" [ngClass]="o.status === 'COMPLETED' ? 'badge-success' : 'badge-warning'">
                       {{ o.status }}
@@ -391,6 +426,11 @@ import {
         <div class="modal-dialog">
           <div class="modal-header">
             <h3><span>🩺</span> Record Patient Vitals</h3>
+            <div class="vitals-presets">
+              <button type="button" class="btn btn-xs btn-secondary" (click)="applyVitalPreset('normal')">Normal</button>
+              <button type="button" class="btn btn-xs btn-secondary" (click)="applyVitalPreset('hypertensive')">Hypertensive</button>
+              <button type="button" class="btn btn-xs btn-secondary" (click)="applyVitalPreset('fever')">Fever</button>
+            </div>
             <button class="close-btn" (click)="closeVitalsModal()">×</button>
           </div>
           <form (ngSubmit)="submitVitals()">
@@ -403,26 +443,23 @@ import {
                 <label>Diastolic BP (mmHg)</label>
                 <input type="number" [(ngModel)]="newVital.diastolicBP" name="diastolicBP" class="form-control" placeholder="80" />
               </div>
-            </div>
-
-            <div class="form-row">
               <div class="form-group col">
-                <label>Heart Rate (BPM)</label>
+                <label>Heart Rate (bpm)</label>
                 <input type="number" [(ngModel)]="newVital.heartRate" name="heartRate" class="form-control" placeholder="72" />
               </div>
-              <div class="form-group col">
-                <label>Respiratory Rate (/min)</label>
-                <input type="number" [(ngModel)]="newVital.respiratoryRate" name="respiratoryRate" class="form-control" placeholder="16" />
-              </div>
             </div>
 
             <div class="form-row">
               <div class="form-group col">
-                <label>Temperature (°C)</label>
+                <label>Resp Rate (/min)</label>
+                <input type="number" [(ngModel)]="newVital.respiratoryRate" name="respiratoryRate" class="form-control" placeholder="16" />
+              </div>
+              <div class="form-group col">
+                <label>Temp (°C)</label>
                 <input type="number" step="0.1" [(ngModel)]="newVital.temperature" name="temperature" class="form-control" placeholder="36.8" />
               </div>
               <div class="form-group col">
-                <label>Oxygen Saturation SpO2 (%)</label>
+                <label>Oxygen Sat (%)</label>
                 <input type="number" [(ngModel)]="newVital.oxygenSaturation" name="oxygenSaturation" class="form-control" placeholder="98" />
               </div>
             </div>
@@ -430,86 +467,91 @@ import {
             <div class="form-row">
               <div class="form-group col">
                 <label>Height (cm)</label>
-                <input type="number" [(ngModel)]="newVital.heightCm" name="heightCm" class="form-control" placeholder="175" (input)="computeBmi()" />
+                <input type="number" [(ngModel)]="newVital.heightCm" (input)="computeBmi()" name="heightCm" class="form-control" placeholder="175" />
               </div>
               <div class="form-group col">
                 <label>Weight (kg)</label>
-                <input type="number" step="0.1" [(ngModel)]="newVital.weightKg" name="weightKg" class="form-control" placeholder="75.0" (input)="computeBmi()" />
+                <input type="number" step="0.1" [(ngModel)]="newVital.weightKg" (input)="computeBmi()" name="weightKg" class="form-control" placeholder="70" />
               </div>
               <div class="form-group col">
                 <label>Calculated BMI</label>
-                <input type="number" [(ngModel)]="newVital.bmi" name="bmi" class="form-control bg-light" readonly />
+                <input type="number" [(ngModel)]="newVital.bmi" name="bmi" readonly class="form-control bg-light font-mono" />
               </div>
             </div>
 
             <div class="form-group">
-              <label>Clinical Notes</label>
-              <input type="text" [(ngModel)]="newVital.notes" name="notes" class="form-control" placeholder="Routine checkup vitals, patient sitting" />
+              <label>Clinical Observations / Notes</label>
+              <textarea [(ngModel)]="newVital.notes" name="notes" class="form-control" rows="2" placeholder="e.g. Patient rested 5 minutes prior to measurement"></textarea>
             </div>
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" (click)="closeVitalsModal()">Cancel</button>
               <button type="submit" [disabled]="submittingVitals" class="btn btn-primary">
-                {{ submittingVitals ? 'Saving...' : 'Save Vitals Record' }}
+                {{ submittingVitals ? 'Saving...' : 'Save Vitals Flowsheet' }}
               </button>
             </div>
           </form>
         </div>
       </div>
+
       </ng-container>
     </div>
   `,
   styles: [`
     .patient-detail-page {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 1.5rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .detail-state-card {
-      text-align: center;
-      padding: 3.5rem 1.5rem;
-      margin-bottom: 1.5rem;
-      background: white;
-      border-radius: 12px;
-    }
-
-    .detail-spinner {
-      width: 44px;
-      height: 44px;
-      border: 3.5px solid #e2e8f0;
-      border-top-color: #0284c7;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 1.25rem auto;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      padding: 0 1.75rem;
     }
 
     .top-nav {
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
 
       .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
         color: #0284c7;
-        font-weight: 600;
+        font-weight: 700;
         text-decoration: none;
-        font-size: 0.85rem;
+        font-size: 0.88rem;
+        transition: color 0.15s;
 
         &:hover {
-          text-decoration: underline;
+          color: #0369a1;
         }
       }
     }
 
+    .detail-state-card {
+      text-align: center;
+      padding: 4rem 2rem;
+
+      h3 {
+        font-size: 1.35rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .detail-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3.5px solid #e2e8f0;
+      border-top-color: #0284c7;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 1.25rem auto;
+    }
+
+    /* Patient Header Banner */
     .patient-banner {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
       gap: 1.5rem;
+      background: white;
+      border-left: 5px solid #0284c7;
     }
 
     .banner-main {
@@ -521,158 +563,98 @@ import {
     .patient-avatar {
       width: 64px;
       height: 64px;
-      border-radius: 50%;
+      border-radius: 16px;
       background: linear-gradient(135deg, #0284c7, #0d9488);
       color: white;
-      font-size: 1.5rem;
       font-weight: 800;
+      font-size: 1.45rem;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
+      flex-shrink: 0;
     }
 
     .meta-row {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.85rem;
+      margin-bottom: 0.35rem;
 
       h2 {
-        font-size: 1.5rem;
+        font-size: 1.45rem;
+        margin: 0;
       }
     }
 
     .demographics-line {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: #64748b;
-      margin-top: 0.35rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .safety-alerts {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .alert-box {
-      border-radius: 8px;
-      padding: 0.5rem 0.85rem;
-      min-width: 180px;
+      border-radius: 10px;
+      padding: 0.65rem 0.95rem;
+      font-size: 0.78rem;
+      min-width: 200px;
 
       .alert-title {
         display: block;
-        font-size: 0.65rem;
         font-weight: 800;
         letter-spacing: 0.05em;
-        margin-bottom: 0.15rem;
+        font-size: 0.68rem;
+        margin-bottom: 0.2rem;
       }
 
       .alert-content {
-        display: block;
-        font-size: 0.8rem;
         font-weight: 600;
       }
 
       &.allergy-box {
         background: #fee2e2;
-        border: 1px solid #fecaca;
-        .alert-title, .alert-content { color: #b91c1c; }
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #b91c1c;
       }
 
       &.conditions-box {
         background: #e0f2fe;
-        border: 1px solid #bae6fd;
-        .alert-title, .alert-content { color: #0369a1; }
+        border: 1px solid rgba(2, 132, 199, 0.3);
+        color: #0369a1;
       }
     }
 
-    /* BMI Spectrum Gauge */
-    .bmi-spectrum-card {
-      padding: 1.15rem 1.35rem;
-      background: white;
-    }
-
-    .bmi-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.85rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .bmi-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #0f172a;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .bmi-current-pill {
-      font-size: 0.8rem;
-      padding: 0.3rem 0.75rem;
-      border-radius: 20px;
-      font-weight: 700;
-
-      &.bmi-under { background: #e0f2fe; color: #0284c7; }
-      &.bmi-normal { background: #d1fae5; color: #059669; }
-      &.bmi-over { background: #fef3c7; color: #d97706; }
-      &.bmi-obese { background: #fee2e2; color: #dc2626; }
-    }
-
-    .bmi-spectrum-bar {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr 1fr 1fr;
-      border-radius: 8px;
-      overflow: hidden;
-      height: 28px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-align: center;
-      line-height: 28px;
-      color: white;
-    }
-
-    .bmi-segment {
-      transition: all 0.2s;
-      opacity: 0.45;
-
-      &.highlight {
-        opacity: 1;
-        box-shadow: inset 0 0 0 2px white, 0 0 8px rgba(0, 0, 0, 0.3);
-        transform: scaleY(1.1);
-        z-index: 2;
-      }
-
-      &.seg-under { background: #0284c7; }
-      &.seg-normal { background: #10b981; }
-      &.seg-over { background: #f59e0b; }
-      &.seg-obese { background: #ef4444; }
-    }
-
+    /* Chart Tabs */
     .chart-tabs {
       display: flex;
-      gap: 0.4rem;
-      margin-bottom: 1.25rem;
-      border-bottom: 1px solid #cbd5e1;
-      padding-bottom: 0.2rem;
-      overflow-x: auto;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 0.35rem;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
-      background: none;
-      border: none;
-      padding: 0.65rem 1.1rem;
-      font-size: 0.875rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.15rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: #64748b;
+      background: transparent;
+      border: none;
+      border-radius: 9px;
       cursor: pointer;
-      border-radius: 8px 8px 0 0;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.15s ease;
-      white-space: nowrap;
+      transition: all 0.2s ease;
 
       &:hover {
         color: #0f172a;
@@ -681,124 +663,242 @@ import {
 
       &.active {
         color: #0284c7;
-        border-bottom: 3px solid #0284c7;
-        background: white;
+        background: #e0f2fe;
       }
     }
 
+    /* Vitals HUD Grid */
+    .latest-vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .vital-hud-card {
+      background: white;
+      border: 1.5px solid var(--slate-200);
+      border-radius: 14px;
+      padding: 1.1rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      }
+
+      &.hud-alert {
+        border-color: #fca5a5;
+        background: #fff8f8;
+      }
+
+      .hud-top {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .hud-icon {
+        font-size: 1.25rem;
+      }
+
+      .hud-tag {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+
+      .hud-val {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+
+        small {
+          font-size: 0.8rem;
+          color: #64748b;
+          font-weight: 600;
+        }
+      }
+
+      .hud-status {
+        font-size: 0.75rem;
+        color: #059669;
+        font-weight: 700;
+        margin-top: 0.35rem;
+
+        &.status-danger {
+          color: #dc2626;
+        }
+        &.status-warn {
+          color: #d97706;
+        }
+      }
+    }
+
+    /* Information Lists */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
 
     .info-list {
-      margin-top: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 1rem;
+      margin-top: 1rem;
     }
 
     .info-item {
       display: flex;
-      justify-content: space-between;
-      border-bottom: 1px dashed #e2e8f0;
-      padding-bottom: 0.4rem;
-      font-size: 0.85rem;
+      flex-direction: column;
+      gap: 0.15rem;
 
-      .label { color: #64748b; font-weight: 600; }
-      .val { color: #1e293b; font-weight: 700; }
+      .label {
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .val {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #0f172a;
+      }
     }
 
+    /* SOAP Notes Flow */
     .encounters-flow {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
     .encounter-card {
-      border-left: 4px solid #0284c7;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
     }
 
     .enc-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.6rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
 
-      .enc-date {
-        font-size: 0.8rem;
-        color: #64748b;
-        margin-left: 0.5rem;
-      }
+    .enc-date {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-left: 0.75rem;
+    }
 
-      .enc-provider {
-        font-size: 0.85rem;
-        color: #334155;
-      }
+    .enc-provider {
+      font-size: 0.85rem;
+      color: #334155;
     }
 
     .enc-complaint {
-      font-size: 0.95rem;
-      color: #0f172a;
-      margin-bottom: 1rem;
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid #e2e8f0;
     }
 
     .soap-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
-      background: #f8fafc;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
+      gap: 1rem;
     }
 
     .soap-col {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+
       .soap-heading {
         font-size: 0.75rem;
         font-weight: 800;
         text-transform: uppercase;
-        color: #0369a1;
-        margin-bottom: 0.35rem;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
       }
 
       p {
-        font-size: 0.8rem;
-        color: #334155;
-        white-space: pre-line;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        margin: 0;
+      }
+
+      &.soap-s {
+        border-top: 3px solid #0284c7;
+        .soap-heading { color: #0284c7; }
+      }
+      &.soap-o {
+        border-top: 3px solid #0d9488;
+        .soap-heading { color: #0d9488; }
+      }
+      &.soap-a {
+        border-top: 3px solid #8b5cf6;
+        .soap-heading { color: #8b5cf6; }
+      }
+      &.soap-p {
+        border-top: 3px solid #10b981;
+        .soap-heading { color: #10b981; }
       }
     }
 
     .icd-tags {
       display: flex;
+      gap: 0.35rem;
       flex-wrap: wrap;
-      gap: 0.25rem;
-      margin-top: 0.5rem;
+      margin-top: 0.65rem;
     }
 
     .icd-tag {
-      background: #e2e8f0;
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
+      background: #ede9fe;
+      color: #6d28d9;
       font-size: 0.7rem;
-      font-family: monospace;
       font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
     }
 
     .enc-footer {
-      margin-top: 0.75rem;
-      padding-top: 0.6rem;
+      margin-top: 1.25rem;
+      padding-top: 0.85rem;
       border-top: 1px solid #f1f5f9;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: #047857;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: flex-end;
     }
 
-    .row-abnormal {
-      background-color: #fff5f5 !important;
+    .empty-card {
+      text-align: center;
+      padding: 3rem;
+      color: #94a3b8;
+    }
+
+    .vitals-presets {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .btn-xs {
+      padding: 0.25rem 0.6rem;
+      font-size: 0.72rem;
+      border-radius: 6px;
     }
 
     .form-row {
@@ -809,6 +909,7 @@ import {
     .col { flex: 1; }
     .bg-light { background-color: #f1f5f9 !important; }
     .mb-3 { margin-bottom: 1rem; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
 
     @media (max-width: 1024px) {
       .patient-banner {
@@ -825,40 +926,8 @@ import {
 
     @media (max-width: 640px) {
       .patient-detail-page {
-        padding: 0 0.75rem;
-        margin: 0.75rem auto;
-      }
-      .patient-banner {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
-      }
-      .banner-main {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-      .meta-row {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .demographics-line {
-        justify-content: center;
-        flex-wrap: wrap;
-        font-size: 0.8rem;
-      }
-      .safety-alerts {
-        width: 100%;
-        flex-direction: column;
-      }
-      .chart-tabs {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 0.5rem;
-        -webkit-overflow-scrolling: touch;
-      }
-      .tab-btn {
-        flex-shrink: 0;
+        padding: 0.75rem;
+        margin: 0.5rem auto;
       }
       .soap-grid {
         grid-template-columns: 1fr;
@@ -981,12 +1050,28 @@ export class PatientDetailComponent implements OnInit {
     return 'Obese';
   }
 
-  getBmiClass(bmi?: number): string {
-    if (!bmi) return 'bmi-normal';
-    if (bmi < 18.5) return 'bmi-under';
-    if (bmi < 25) return 'bmi-normal';
-    if (bmi < 30) return 'bmi-over';
-    return 'bmi-obese';
+  isBpAbnormal(v: VitalSign): boolean {
+    if (!v.systolicBP || !v.diastolicBP) return false;
+    return v.systolicBP >= 140 || v.diastolicBP >= 90;
+  }
+
+  getBpStatus(v: VitalSign): string {
+    if (!v.systolicBP || !v.diastolicBP) return 'Normal';
+    if (v.systolicBP >= 140 || v.diastolicBP >= 90) return 'Hypertensive (Stage 2)';
+    if (v.systolicBP >= 130 || v.diastolicBP >= 80) return 'Pre-hypertension';
+    return 'Optimal BP';
+  }
+
+  getBpStatusClass(v: VitalSign): string {
+    if (!v.systolicBP || !v.diastolicBP) return '';
+    if (v.systolicBP >= 140 || v.diastolicBP >= 90) return 'status-danger';
+    if (v.systolicBP >= 130 || v.diastolicBP >= 80) return 'status-warn';
+    return '';
+  }
+
+  isHrAbnormal(v: VitalSign): boolean {
+    if (!v.heartRate) return false;
+    return v.heartRate > 100 || v.heartRate < 60;
   }
 
   openVitalsModal(): void {
@@ -996,6 +1081,34 @@ export class PatientDetailComponent implements OnInit {
 
   closeVitalsModal(): void {
     this.showVitalsModal = false;
+  }
+
+  applyVitalPreset(type: 'normal' | 'hypertensive' | 'fever'): void {
+    if (type === 'normal') {
+      this.newVital.systolicBP = 118;
+      this.newVital.diastolicBP = 76;
+      this.newVital.heartRate = 68;
+      this.newVital.respiratoryRate = 16;
+      this.newVital.temperature = 36.7;
+      this.newVital.oxygenSaturation = 99;
+      this.newVital.notes = 'Patient resting quietly. Vitals within expected clinical range.';
+    } else if (type === 'hypertensive') {
+      this.newVital.systolicBP = 158;
+      this.newVital.diastolicBP = 96;
+      this.newVital.heartRate = 88;
+      this.newVital.respiratoryRate = 18;
+      this.newVital.temperature = 36.9;
+      this.newVital.oxygenSaturation = 97;
+      this.newVital.notes = 'Stage 2 Hypertension detected. Recheck recommended in 15 mins.';
+    } else if (type === 'fever') {
+      this.newVital.systolicBP = 110;
+      this.newVital.diastolicBP = 70;
+      this.newVital.heartRate = 106;
+      this.newVital.respiratoryRate = 22;
+      this.newVital.temperature = 38.6;
+      this.newVital.oxygenSaturation = 95;
+      this.newVital.notes = 'Patient reports chills and malaise. Pyrexia noted.';
+    }
   }
 
   computeBmi(): void {
@@ -1016,7 +1129,7 @@ export class PatientDetailComponent implements OnInit {
         this.closeVitalsModal();
         this.toastService.success(
           'Vitals Logged Successfully',
-          `BP: ${saved.systolicBP}/${saved.diastolicBP} mmHg, Calculated BMI: ${saved.bmi} (${this.getBmiLabel(saved.bmi)})`
+          `BP: ${saved.systolicBP}/${saved.diastolicBP} mmHg, BMI: ${saved.bmi} (${this.getBmiLabel(saved.bmi)})`
         );
       },
       error: (err) => {

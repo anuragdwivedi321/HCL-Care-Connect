@@ -15,7 +15,7 @@ import { Patient } from '../../models/ehr.models';
       <div class="page-header">
         <div>
           <h2>Patient Master Index (EMPI)</h2>
-          <p class="subtitle">Search, filter, and register patient medical charts across healthcare departments.</p>
+          <p class="subtitle">Search, filter, and register patient medical charts across all clinical departments.</p>
         </div>
         <button (click)="openRegisterModal()" class="btn btn-primary">
           <span>➕</span> Register New Patient
@@ -181,7 +181,12 @@ import { Patient } from '../../models/ehr.models';
         <div class="modal-dialog">
           <div class="modal-header">
             <h3><span>👤</span> New Patient Registration (EMPI)</h3>
-            <button class="close-btn" (click)="closeModal()">×</button>
+            <div class="modal-header-actions">
+              <button type="button" class="btn btn-sm btn-secondary autofill-btn" (click)="autoFillSamplePatient()">
+                <span>🎲</span> Auto-Fill Sample
+              </button>
+              <button class="close-btn" (click)="closeModal()">×</button>
+            </div>
           </div>
           <form (ngSubmit)="submitPatient()">
             <div class="form-row">
@@ -271,7 +276,7 @@ import { Patient } from '../../models/ehr.models';
                 type="text"
                 [(ngModel)]="newPatient.allergies"
                 name="allergies"
-                class="form-control border-danger"
+                class="form-control"
                 placeholder="e.g. Penicillin, NSAIDs, Sulfa drugs (Leave blank if NKDA)"
               />
             </div>
@@ -300,9 +305,9 @@ import { Patient } from '../../models/ehr.models';
   `,
   styles: [`
     .patients-page {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      padding: 0 1.75rem;
     }
 
     .page-header {
@@ -310,18 +315,23 @@ import { Patient } from '../../models/ehr.models';
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-
-      h2 { font-size: 1.6rem; }
-      .subtitle { color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; }
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    /* Metrics Summary Bar */
+    .subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Metrics Bar */
     .metrics-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.25rem;
+      padding: 1.15rem 1.5rem;
+      margin-bottom: 1.5rem;
       background: white;
     }
 
@@ -329,40 +339,42 @@ import { Patient } from '../../models/ehr.models';
       display: flex;
       align-items: center;
       gap: 0.85rem;
-      padding: 0.5rem 0.75rem;
-      border-radius: 10px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-
-      &.alert-pill {
-        background: #fff5f5;
-        border-color: #fecaca;
-        .m-val { color: #dc2626; }
-      }
 
       .m-icon {
-        font-size: 1.5rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
       }
 
       .m-val {
-        font-size: 1.35rem;
+        display: block;
+        font-size: 1.45rem;
         font-weight: 800;
         color: #0f172a;
         line-height: 1.1;
-        display: block;
       }
 
       .m-lbl {
-        font-size: 0.72rem;
+        font-size: 0.78rem;
         color: #64748b;
         font-weight: 600;
+      }
+
+      &.alert-pill {
+        .m-icon { background: #fee2e2; }
+        .m-val { color: #dc2626; }
       }
     }
 
     /* Search Toolbar */
     .search-card {
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      padding: 1.15rem 1.5rem;
     }
 
     .search-flex {
@@ -377,49 +389,48 @@ import { Patient } from '../../models/ehr.models';
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.45rem 0.85rem;
       flex: 1;
       min-width: 280px;
-      background: #f8fafc;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 10px;
-      padding: 0.4rem 0.85rem;
-      transition: all 0.2s ease;
 
-      &:focus-within {
-        border-color: #0284c7;
-        background: white;
-        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      .search-icon {
+        font-size: 1.1rem;
+        color: #94a3b8;
       }
-
-      .search-icon { font-size: 1rem; color: #94a3b8; }
 
       .search-input {
         border: none;
-        outline: none;
-        width: 100%;
-        font-size: 0.9rem;
         background: transparent;
+        outline: none;
+        font-size: 0.9rem;
+        width: 100%;
+        color: #0f172a;
+
+        &::placeholder {
+          color: #94a3b8;
+        }
       }
     }
 
     .filter-chips {
       display: flex;
-      gap: 0.4rem;
-      overflow-x: auto;
-      padding-bottom: 0.2rem;
+      gap: 0.45rem;
+      flex-wrap: wrap;
     }
 
     .chip-btn {
       background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      padding: 0.4rem 0.85rem;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      font-weight: 700;
+      border: 1px solid #e2e8f0;
       color: #475569;
+      padding: 0.45rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
 
       &:hover {
         background: #e2e8f0;
@@ -430,11 +441,25 @@ import { Patient } from '../../models/ehr.models';
         background: #0284c7;
         color: white;
         border-color: #0284c7;
-        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
       }
     }
 
-    /* Table Profile Cell */
+    /* Table Styles */
+    .table-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .clickable-row {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+
+      &:hover {
+        background-color: #f0f9ff !important;
+      }
+    }
+
     .patient-profile-cell {
       display: flex;
       align-items: center;
@@ -448,68 +473,70 @@ import { Patient } from '../../models/ehr.models';
       background: linear-gradient(135deg, #0284c7, #0d9488);
       color: white;
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
       flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
     }
 
     .patient-name {
       font-weight: 700;
-      color: #0f172a;
       font-size: 0.95rem;
+      color: #0f172a;
     }
 
     .blood-badge {
+      font-size: 0.72rem;
+      color: #b91c1c;
+      margin-top: 0.15rem;
       display: flex;
       align-items: center;
       gap: 0.3rem;
-      font-size: 0.72rem;
-      color: #0369a1;
-      margin-top: 0.15rem;
 
       .blood-dot {
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: #ef4444;
-        display: inline-block;
+        background: #dc2626;
       }
     }
 
     .mrn-badge {
       font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      font-size: 0.8rem;
     }
 
     .demographics-text {
-      font-size: 0.85rem;
-      color: #1e293b;
+      font-size: 0.875rem;
+      color: #0f172a;
     }
 
     .text-sub {
       font-size: 0.75rem;
       color: #64748b;
+      margin-top: 0.15rem;
     }
 
     .allergy-badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #b91c1c;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
       background: #fee2e2;
-      padding: 0.25rem 0.55rem;
-      border-radius: 6px;
-      display: inline-block;
-      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
     }
 
     .conditions-tag {
-      font-size: 0.72rem;
-      color: #475569;
-      margin-top: 0.35rem;
+      font-size: 0.75rem;
+      color: #0369a1;
       font-weight: 600;
     }
 
@@ -517,22 +544,11 @@ import { Patient } from '../../models/ehr.models';
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      border-color: #0284c7;
-      color: #0284c7;
-      font-weight: 700;
 
       &:hover {
         background: #0284c7;
         color: white;
-      }
-    }
-
-    .clickable-row {
-      cursor: pointer;
-      transition: background-color 0.15s ease;
-
-      &:hover {
-        background-color: #f0f9ff !important;
+        border-color: #0284c7;
       }
     }
 
@@ -540,55 +556,73 @@ import { Patient } from '../../models/ehr.models';
       padding: 3rem 1.5rem;
       text-align: center;
       color: #64748b;
-      font-weight: 600;
     }
 
     .table-spinner {
-      width: 32px;
-      height: 32px;
+      width: 24px;
+      height: 24px;
       border: 3px solid #e2e8f0;
       border-top-color: #0284c7;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.7s linear infinite;
       margin: 0 auto 0.75rem auto;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .col {
-      flex: 1;
-    }
-
-    .border-danger {
-      border-color: #fca5a5 !important;
-    }
-
     .empty-state {
-      padding: 3rem 1rem;
+      padding: 3.5rem 1.5rem;
       text-align: center;
-      color: #64748b;
 
       .empty-icon {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         margin-bottom: 0.5rem;
       }
 
       strong {
         display: block;
-        font-size: 1rem;
+        font-size: 1.05rem;
         color: #0f172a;
         margin-bottom: 0.25rem;
       }
+
+      p {
+        font-size: 0.85rem;
+        color: #64748b;
+      }
     }
 
-    /* Responsive Adaptation */
+    /* Modal Form Rows */
+    .modal-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .autofill-btn {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #166534;
+      font-weight: 600;
+
+      &:hover {
+        background: #dcfce7;
+      }
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.25rem;
+
+      .col {
+        flex: 1;
+      }
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+
     @media (max-width: 768px) {
       .patients-page {
         padding: 0.85rem;
@@ -597,28 +631,10 @@ import { Patient } from '../../models/ehr.models';
       .page-header {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.85rem;
-
-        .btn {
-          width: 100%;
-        }
       }
-      .metrics-bar {
-        grid-template-columns: 1fr 1fr;
-      }
-      .filter-chips {
-        width: 100%;
-        overflow-x: auto;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .metrics-bar {
-        grid-template-columns: 1fr;
-      }
-      .form-row {
+      .search-flex {
         flex-direction: column;
-        gap: 0;
+        align-items: stretch;
       }
     }
   `]
@@ -626,12 +642,12 @@ import { Patient } from '../../models/ehr.models';
 export class PatientListComponent implements OnInit {
   patients: Patient[] = [];
   filteredPatients: Patient[] = [];
+  loading = false;
+  loadError = '';
+  submitting = false;
   searchQuery = '';
   activeCondition = 'ALL';
   showModal = false;
-  submitting = false;
-  loading = false;
-  loadError = '';
 
   newPatient: Patient = {
     firstName: '',
@@ -642,9 +658,9 @@ export class PatientListComponent implements OnInit {
     phone: '',
     email: '',
     address: '',
-    city: 'Bengaluru',
-    state: 'Karnataka',
-    postalCode: '560001',
+    city: '',
+    state: '',
+    postalCode: '',
     allergies: '',
     chronicConditions: '',
     emergencyContactName: '',
@@ -752,6 +768,49 @@ export class PatientListComponent implements OnInit {
 
   closeModal(): void {
     this.showModal = false;
+  }
+
+  autoFillSamplePatient(): void {
+    const samples = [
+      {
+        firstName: 'Meera',
+        lastName: 'Iyer',
+        dateOfBirth: '1988-06-14',
+        gender: 'Female',
+        bloodGroup: 'B+',
+        phone: '+91 98450 12345',
+        email: 'meera.iyer@example.com',
+        address: '42 Orchid Residency, Indiranagar',
+        city: 'Bengaluru',
+        state: 'Karnataka',
+        postalCode: '560038',
+        allergies: 'Penicillin, Sulfonamides',
+        chronicConditions: 'Asthma, Mild Hypertension',
+        emergencyContactName: 'Karthik Iyer (Spouse)',
+        emergencyContactPhone: '+91 98450 67890'
+      },
+      {
+        firstName: 'Arjun',
+        lastName: 'Kapoor',
+        dateOfBirth: '1975-11-20',
+        gender: 'Male',
+        bloodGroup: 'O+',
+        phone: '+91 97110 54321',
+        email: 'arjun.k@example.com',
+        address: '15 Park Street, Bandra West',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        postalCode: '400050',
+        allergies: 'Aspirin (Bronchospasm)',
+        chronicConditions: 'Coronary Artery Disease, Hyperlipidemia',
+        emergencyContactName: 'Sunita Kapoor (Wife)',
+        emergencyContactPhone: '+91 97110 99887'
+      }
+    ];
+
+    const pick = samples[Math.floor(Math.random() * samples.length)];
+    this.newPatient = { ...pick };
+    this.toastService.info('Sample Generated', `Loaded details for ${pick.firstName} ${pick.lastName}`);
   }
 
   submitPatient(): void {

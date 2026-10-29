@@ -23,7 +23,7 @@ interface OrderTemplate {
       <div class="page-header">
         <div>
           <h2>Computerized Physician Order Entry (CPOE)</h2>
-          <p class="subtitle">Direct entry of clinical orders for laboratories, diagnostic imaging, and clinical procedures.</p>
+          <p class="subtitle">Direct digital entry of clinical orders for laboratories, diagnostic imaging, and diagnostic procedures.</p>
         </div>
         <button (click)="openNewOrderModal()" class="btn btn-primary" *ngIf="authService.isDoctor() || authService.isAdmin()">
           <span>➕</span> Requisition New Order
@@ -67,7 +67,7 @@ interface OrderTemplate {
             </thead>
             <tbody>
               <tr *ngFor="let o of filteredOrders" [class.abnormal-row]="o.flaggedAbnormal">
-                <td><span class="badge badge-neutral">#ORD-{{ o.id }}</span></td>
+                <td><span class="badge badge-neutral font-mono">#ORD-{{ o.id }}</span></td>
                 <td>
                   <span class="badge" [ngClass]="'badge-' + (o.orderType === 'LAB' ? 'primary' : (o.orderType === 'RADIOLOGY' ? 'teal' : 'warning'))">
                     {{ o.orderType }}
@@ -75,7 +75,7 @@ interface OrderTemplate {
                 </td>
                 <td>
                   <strong>{{ o.orderName }}</strong>
-                  <div class="text-sub" *ngIf="o.loincCode">LOINC: <code>{{ o.loincCode }}</code></div>
+                  <div class="text-sub font-mono" *ngIf="o.loincCode">LOINC: <code>{{ o.loincCode }}</code></div>
                   <div class="text-sub" *ngIf="o.clinicalIndication">Indication: {{ o.clinicalIndication }}</div>
                 </td>
                 <td>
@@ -109,7 +109,7 @@ interface OrderTemplate {
                 </td>
               </tr>
               <tr *ngIf="filteredOrders.length === 0">
-                <td colspan="9" class="text-center py-4">No CPOE orders matching this filter.</td>
+                <td colspan="9" class="empty-state">No CPOE orders matching this filter.</td>
               </tr>
             </tbody>
           </table>
@@ -126,7 +126,7 @@ interface OrderTemplate {
           <form (ngSubmit)="submitOrder()">
             <!-- Quick Pre-Set Templates -->
             <div class="template-box">
-              <span class="template-title">Standard Healthcare Order Templates:</span>
+              <span class="template-title">Standard LOINC Order Templates:</span>
               <div class="template-chips">
                 <button type="button" *ngFor="let t of templates" (click)="applyTemplate(t)" class="template-chip">
                   {{ t.name }}
@@ -148,80 +148,81 @@ interface OrderTemplate {
               <div class="form-group col">
                 <label>Order Class *</label>
                 <select [(ngModel)]="newOrder.orderType" name="orderType" required class="form-control">
-                  <option value="LAB">Laboratory Panel</option>
-                  <option value="RADIOLOGY">Diagnostic Radiology</option>
-                  <option value="PROCEDURE">Clinical Procedure</option>
+                  <option value="LAB">Laboratory</option>
+                  <option value="RADIOLOGY">Radiology / Imaging</option>
+                  <option value="PROCEDURE">Procedure / Other</option>
                 </select>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group col-2">
-                <label>Test / Procedure Name *</label>
+                <label>Order / Test Name *</label>
                 <input type="text" [(ngModel)]="newOrder.orderName" name="orderName" required class="form-control" placeholder="e.g. Complete Blood Count (CBC)" />
               </div>
+
               <div class="form-group col">
                 <label>LOINC Code</label>
-                <input type="text" [(ngModel)]="newOrder.loincCode" name="loincCode" class="form-control" placeholder="e.g. 58410-2" />
+                <input type="text" [(ngModel)]="newOrder.loincCode" name="loincCode" class="form-control font-mono" placeholder="e.g. 58410-2" />
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group col">
-                <label>Priority *</label>
-                <select [(ngModel)]="newOrder.priority" name="priority" required class="form-control">
+                <label>Clinical Priority *</label>
+                <select [(ngModel)]="newOrder.priority" name="priority" class="form-control">
                   <option value="ROUTINE">Routine</option>
-                  <option value="URGENT">Urgent</option>
-                  <option value="STAT">STAT (Immediate Emergency)</option>
+                  <option value="URGENT">Urgent (Within 4 hrs)</option>
+                  <option value="STAT">STAT (Immediate Critical)</option>
                 </select>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label>Clinical Indication & Diagnosis Justification</label>
-              <textarea [(ngModel)]="newOrder.clinicalIndication" name="clinicalIndication" rows="2" class="form-control" placeholder="e.g. Evaluate dyspnea, rule out acute coronary syndrome..."></textarea>
+              <div class="form-group col-2">
+                <label>Clinical Indication / Reason</label>
+                <input type="text" [(ngModel)]="newOrder.clinicalIndication" name="clinicalIndication" class="form-control" placeholder="e.g. Suspected anemia or pre-operative clearance" />
+              </div>
             </div>
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" (click)="closeNewOrderModal()">Cancel</button>
               <button type="submit" [disabled]="submittingOrder" class="btn btn-primary">
-                {{ submittingOrder ? 'Placing Order...' : 'Sign & Submit Order' }}
+                {{ submittingOrder ? 'Submitting Requisition...' : 'Place Order & Send to Lab' }}
               </button>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- Modal: Enter Results / Update Order Status -->
+      <!-- Modal: Result / Update Diagnostic Order -->
       <div class="modal-backdrop" *ngIf="selectedOrderForResult">
         <div class="modal-dialog">
           <div class="modal-header">
-            <h3><span>📝</span> Report Diagnostic Findings</h3>
+            <h3><span>🔬</span> Enter Diagnostic Results & Telemetry</h3>
             <button class="close-btn" (click)="closeResultModal()">×</button>
           </div>
           <form (ngSubmit)="submitResults()">
             <div class="order-summary-box">
               <strong>{{ selectedOrderForResult.orderName }}</strong> ({{ selectedOrderForResult.orderType }})
-              <div class="text-sub">Patient #{{ selectedOrderForResult.patientId }} • LOINC: {{ selectedOrderForResult.loincCode || 'N/A' }}</div>
+              <div class="text-sub font-mono">Patient #{{ selectedOrderForResult.patientId }} • LOINC: {{ selectedOrderForResult.loincCode || 'N/A' }}</div>
             </div>
 
             <div class="form-group mt-3">
               <label>Lifecycle Status *</label>
               <select [(ngModel)]="resultForm.status" name="status" class="form-control">
-                <option value="IN_PROGRESS">In Progress / Processing</option>
-                <option value="COMPLETED">Completed / Resulted</option>
+                <option value="IN_PROGRESS">In Progress / Specimen Processing</option>
+                <option value="COMPLETED">Completed / Published</option>
                 <option value="CANCELLED">Cancelled</option>
               </select>
             </div>
 
             <div class="form-group">
               <label>Result Findings / Interpretation</label>
-              <textarea [(ngModel)]="resultForm.resultNotes" name="resultNotes" rows="3" class="form-control" placeholder="Enter quantitative values or radiology radiologist impression..."></textarea>
+              <textarea [(ngModel)]="resultForm.resultNotes" name="resultNotes" rows="3" class="form-control" placeholder="Enter quantitative values or radiologist impression..."></textarea>
             </div>
 
             <div class="form-group">
               <label>Biological Reference / Normal Range</label>
-              <input type="text" [(ngModel)]="resultForm.normalRange" name="normalRange" class="form-control" placeholder="e.g. Hemoglobin 13.8 - 17.2 g/dL, WBC 4.5 - 11.0 x10^3/uL" />
+              <input type="text" [(ngModel)]="resultForm.normalRange" name="normalRange" class="form-control font-mono" placeholder="e.g. Hemoglobin 13.8 - 17.2 g/dL, WBC 4.5 - 11.0 x10^3/uL" />
             </div>
 
             <div class="form-group alert-checkbox-group">
@@ -234,7 +235,7 @@ interface OrderTemplate {
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" (click)="closeResultModal()">Cancel</button>
               <button type="submit" [disabled]="submittingResult" class="btn btn-primary">
-                {{ submittingResult ? 'Updating...' : 'Save & Publish Results' }}
+                {{ submittingResult ? 'Publishing...' : 'Save & Publish Results' }}
               </button>
             </div>
           </form>
@@ -244,9 +245,9 @@ interface OrderTemplate {
   `,
   styles: [`
     .cpoe-page {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      padding: 0 1.75rem;
     }
 
     .page-header {
@@ -254,14 +255,17 @@ interface OrderTemplate {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
 
       h2 { font-size: 1.6rem; }
       .subtitle { color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; }
     }
 
     .filter-bar {
-      padding: 0.5rem 1rem;
+      padding: 0.65rem 1.15rem;
       margin-bottom: 1.25rem;
+      background: white;
     }
 
     .filter-tabs {
@@ -273,12 +277,12 @@ interface OrderTemplate {
     .filter-tab {
       background: none;
       border: none;
-      padding: 0.5rem 0.85rem;
+      padding: 0.55rem 0.95rem;
       font-size: 0.85rem;
       font-weight: 700;
       color: #64748b;
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 8px;
       transition: all 0.15s ease;
 
       &:hover {
@@ -289,7 +293,13 @@ interface OrderTemplate {
       &.active {
         background: #0284c7;
         color: white;
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
       }
+    }
+
+    .table-card {
+      padding: 0;
+      overflow: hidden;
     }
 
     .abnormal-row {
@@ -298,7 +308,7 @@ interface OrderTemplate {
 
     .patient-link {
       color: #0284c7;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
 
       &:hover { text-decoration: underline; }
@@ -307,30 +317,34 @@ interface OrderTemplate {
     .template-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 1.15rem;
 
       .template-title {
         display: block;
         font-size: 0.75rem;
         font-weight: 700;
         color: #475569;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.45rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
       }
 
       .template-chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.4rem;
       }
 
       .template-chip {
         background: white;
         border: 1px solid #cbd5e1;
-        border-radius: 4px;
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
+        border-radius: 6px;
+        padding: 0.3rem 0.65rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #334155;
         cursor: pointer;
         transition: all 0.15s;
 
@@ -344,15 +358,15 @@ interface OrderTemplate {
 
     .order-summary-box {
       background: #f8fafc;
-      border-radius: 8px;
-      padding: 0.75rem;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
       border: 1px solid #e2e8f0;
     }
 
     .alert-checkbox-group {
       background: #fff5f5;
-      padding: 0.75rem;
-      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
       border: 1px solid #fecaca;
     }
 
@@ -369,34 +383,27 @@ interface OrderTemplate {
     .col { flex: 1; }
     .col-2 { flex: 2; }
     .mt-3 { margin-top: 0.75rem; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .empty-state {
+      padding: 3rem;
+      text-align: center;
+      color: #94a3b8;
+    }
 
     @media (max-width: 768px) {
       .cpoe-page {
-        padding: 1rem;
+        padding: 0.85rem;
+        margin: 0.5rem auto;
       }
       .page-header {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.85rem;
-
-        .btn {
-          width: 100%;
-        }
       }
       .filter-tabs {
         overflow-x: auto;
         white-space: nowrap;
         padding-bottom: 0.25rem;
-        -webkit-overflow-scrolling: touch;
-      }
-      .filter-tab {
-        flex-shrink: 0;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .cpoe-page {
-        padding: 0.75rem;
       }
       .form-row {
         flex-direction: column;
@@ -451,35 +458,28 @@ export class CpoeOrdersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadOrders();
-    this.loadPatients();
-
-    const paramPatientId = Number(this.route.snapshot.queryParamMap.get('patientId'));
-    if (paramPatientId) {
-      this.newOrder.patientId = paramPatientId;
-      this.showNewOrderModal = true;
-    }
-  }
-
-  loadOrders(): void {
-    this.ehrService.getAllOrders().subscribe({
-      next: (data) => {
-        this.orders = data || [];
-        this.applyFilter();
-        this.cdr.markForCheck();
-      },
-      error: (e) => {
-        console.error(e);
-        this.toastService.error('Error', 'Failed to load clinical orders worklist');
-        this.cdr.markForCheck();
+    this.loadData();
+    this.route.queryParams.subscribe(params => {
+      if (params['patientId']) {
+        this.newOrder.patientId = Number(params['patientId']);
+        this.openNewOrderModal();
       }
     });
   }
 
-  loadPatients(): void {
+  loadData(): void {
+    this.ehrService.getAllOrders().subscribe({
+      next: (orders) => {
+        this.orders = orders || [];
+        this.applyFilter();
+        this.cdr.markForCheck();
+      },
+      error: (e) => console.error(e)
+    });
+
     this.ehrService.getPatients().subscribe({
-      next: (data) => {
-        this.patients = data || [];
+      next: (patients) => {
+        this.patients = patients || [];
         this.cdr.markForCheck();
       },
       error: (e) => console.error(e)
@@ -489,16 +489,17 @@ export class CpoeOrdersComponent implements OnInit {
   setFilter(filter: 'ALL' | 'PENDING' | 'COMPLETED' | 'ABNORMAL'): void {
     this.currentFilter = filter;
     this.applyFilter();
-    this.cdr.markForCheck();
   }
 
   applyFilter(): void {
     if (this.currentFilter === 'ALL') {
       this.filteredOrders = this.orders;
+    } else if (this.currentFilter === 'PENDING') {
+      this.filteredOrders = this.orders.filter(o => o.status === 'PENDING' || o.status === 'IN_PROGRESS');
+    } else if (this.currentFilter === 'COMPLETED') {
+      this.filteredOrders = this.orders.filter(o => o.status === 'COMPLETED');
     } else if (this.currentFilter === 'ABNORMAL') {
       this.filteredOrders = this.orders.filter(o => o.flaggedAbnormal);
-    } else {
-      this.filteredOrders = this.orders.filter(o => o.status === this.currentFilter);
     }
   }
 
@@ -510,100 +511,81 @@ export class CpoeOrdersComponent implements OnInit {
     return this.orders.filter(o => o.flaggedAbnormal).length;
   }
 
-  applyTemplate(t: OrderTemplate): void {
-    this.newOrder.orderName = t.name;
-    this.newOrder.orderType = t.type;
-    this.newOrder.loincCode = t.loinc;
-    this.newOrder.priority = t.priority;
-    this.cdr.markForCheck();
-  }
-
   openNewOrderModal(): void {
     this.showNewOrderModal = true;
-    this.cdr.markForCheck();
   }
 
   closeNewOrderModal(): void {
     this.showNewOrderModal = false;
-    this.submittingOrder = false;
-    this.cdr.markForCheck();
+  }
+
+  applyTemplate(t: OrderTemplate): void {
+    this.newOrder.orderName = t.name;
+    this.newOrder.orderType = t.type as any;
+    this.newOrder.loincCode = t.loinc;
+    this.newOrder.priority = t.priority as any;
   }
 
   submitOrder(): void {
     if (!this.newOrder.patientId || !this.newOrder.orderName) {
-      this.toastService.warning('Validation Warning', 'Please select a patient and enter a test/procedure name.');
+      this.toastService.warning('Validation Warning', 'Please select a patient and specify an order name.');
       return;
     }
 
     this.submittingOrder = true;
-    this.cdr.markForCheck();
-
     this.ehrService.placeOrder(this.newOrder).subscribe({
-      next: (placed) => {
+      next: (created) => {
         this.submittingOrder = false;
-        this.orders.unshift(placed);
+        this.orders.unshift(created);
         this.applyFilter();
         this.closeNewOrderModal();
         this.toastService.success(
-          'CPOE Order Placed',
-          `Order #${placed.id} for "${placed.orderName}" submitted successfully in worklist.`
+          'CPOE Requisition Submitted',
+          `Order #${created.id} for "${created.orderName}" sent to diagnostics.`
         );
-        // Reset form
-        this.newOrder = {
-          patientId: 0,
-          orderType: 'LAB',
-          orderName: '',
-          loincCode: '',
-          priority: 'ROUTINE',
-          clinicalIndication: ''
-        };
-        this.cdr.markForCheck();
       },
       error: (err) => {
         this.submittingOrder = false;
-        this.toastService.error('Order Placement Failed', err.error?.message || err.message);
-        this.cdr.markForCheck();
+        this.toastService.error('Requisition Failed', err.message);
       }
     });
   }
 
   openResultModal(order: MedicalOrder): void {
     this.selectedOrderForResult = order;
-    this.resultForm.status = order.status || 'COMPLETED';
-    this.resultForm.resultNotes = order.resultNotes || '';
-    this.resultForm.normalRange = order.normalRange || '';
-    this.resultForm.flaggedAbnormal = order.flaggedAbnormal || false;
-    this.cdr.markForCheck();
+    this.resultForm = {
+      status: order.status || 'COMPLETED',
+      resultNotes: order.resultNotes || '',
+      normalRange: order.normalRange || '',
+      flaggedAbnormal: order.flaggedAbnormal || false
+    };
   }
 
   closeResultModal(): void {
     this.selectedOrderForResult = null;
-    this.submittingResult = false;
-    this.cdr.markForCheck();
   }
 
   submitResults(): void {
     if (!this.selectedOrderForResult?.id) return;
     this.submittingResult = true;
-    this.cdr.markForCheck();
 
     this.ehrService.updateOrderStatus(this.selectedOrderForResult.id, this.resultForm).subscribe({
       next: (updated) => {
         this.submittingResult = false;
         const idx = this.orders.findIndex(o => o.id === updated.id);
-        if (idx >= 0) this.orders[idx] = updated;
+        if (idx >= 0) {
+          this.orders[idx] = updated;
+        }
         this.applyFilter();
         this.closeResultModal();
         this.toastService.success(
-          'Diagnostic Result Updated',
-          `Results reported for ${updated.orderName}. Status: ${updated.status}`
+          'Diagnostics Updated',
+          `Order #${updated.id} result status saved. Flagged abnormal: ${updated.flaggedAbnormal ? 'YES' : 'NO'}`
         );
-        this.cdr.markForCheck();
       },
       error: (err) => {
         this.submittingResult = false;
-        this.toastService.error('Result Update Failed', err.error?.message || err.message);
-        this.cdr.markForCheck();
+        this.toastService.error('Result Update Failed', err.message);
       }
     });
   }
