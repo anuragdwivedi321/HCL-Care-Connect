@@ -19,7 +19,10 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
           <p class="subtitle">Clinical pharmacy order management with integrated real-time drug-drug interaction warning checks.</p>
         </div>
         <button (click)="openPrescribeModal()" class="btn btn-primary" *ngIf="authService.isDoctor() || authService.isAdmin()">
-          <span>💊</span> Prescribe New Medication
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+          Prescribe New Medication
         </button>
       </div>
 
@@ -27,7 +30,14 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
       <div class="card toolbar-card">
         <div class="toolbar-header-row">
           <div class="toolbar-title-box">
-            <span class="toolbar-title-icon">👥</span>
+            <div class="toolbar-title-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
             <div>
               <strong class="toolbar-title">Patient Medication Worklist</strong>
               <div class="toolbar-subtitle">Filter prescriptions by searching patient name, MRN, or selecting from registry.</div>
@@ -47,7 +57,12 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
           <div class="patient-search-autocomplete">
             <label class="filter-label">Search / Filter by Patient:</label>
             <div class="search-input-group">
-              <span class="search-icon">🔍</span>
+              <span class="search-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </span>
               <input
                 type="text"
                 class="form-control patient-search-field"
@@ -334,9 +349,10 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
   `,
   styles: [`
     .medications-page {
-      max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
     }
 
     .page-header {

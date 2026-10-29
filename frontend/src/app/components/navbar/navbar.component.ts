@@ -9,365 +9,455 @@ import { filter } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <header class="navbar-header" *ngIf="authService.currentUser()">
-      <div class="nav-top-accent"></div>
-      <div class="nav-container">
-        <!-- Brand / Logo -->
-        <div class="brand">
+    <!-- If user is logged in, show Enterprise Navigation Shell -->
+    <ng-container *ngIf="authService.currentUser()">
+      
+      <!-- Mobile Top Bar (Only on screens < 992px) -->
+      <header class="mobile-topbar mobile-only">
+        <button class="mobile-menu-btn" (click)="toggleMobileMenu()" aria-label="Toggle Navigation">
+          <span>{{ mobileMenuOpen() ? '✕' : '☰' }}</span>
+        </button>
+        <div class="mobile-brand">
+          <span class="brand-cross">⚕</span>
+          <span class="mobile-brand-title">CareConnect EHR</span>
+        </div>
+        <div class="mobile-user-mini" [ngClass]="roleClass()">
+          {{ avatarText() }}
+        </div>
+      </header>
+
+      <!-- Desktop Sidebar & Mobile Drawer -->
+      <aside class="sidebar-aside" [class.mobile-open]="mobileMenuOpen()">
+        <!-- Brand Header -->
+        <div class="sidebar-brand">
           <a routerLink="/" class="brand-link" (click)="closeMobileMenu()">
-            <span class="brand-icon">⚕</span>
-            <div class="brand-text">
-              <div class="brand-title-row">
-                <span class="brand-title">CareConnect</span>
-                <span class="live-pulse-container" title="System Status: Fully Operational">
-                  <span class="live-dot"></span>
-                  <span class="live-ping"></span>
-                </span>
+            <div class="brand-icon-box">
+              <span class="brand-cross">⚕</span>
+            </div>
+            <div class="brand-titles">
+              <div class="brand-name-row">
+                <span class="brand-name">CareConnect</span>
+                <span class="brand-version">v2.6</span>
               </div>
-              <span class="brand-sub">ENTERPRISE EHR • v2.6</span>
+              <span class="brand-tagline">ENTERPRISE EHR PLATFORM</span>
             </div>
           </a>
         </div>
 
-        <!-- Desktop Navigation Links -->
-        <nav class="nav-links desktop-only">
+        <!-- Telemetry / Hospital Unit Badge -->
+        <div class="telemetry-chip">
+          <div class="t-pulse">
+            <span class="t-dot"></span>
+            <span class="t-ring"></span>
+          </div>
+          <div class="t-info">
+            <span class="t-status">SYSTEM OPERATIONAL</span>
+            <span class="t-sub">Oracle DB XE • HIPAA Compliant</span>
+          </div>
+        </div>
+
+        <!-- Nav Navigation Menu -->
+        <nav class="sidebar-nav">
           <ng-container *ngIf="!authService.isPatient()">
-            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-              <span class="nav-icon">📊</span>
-              <span>Dashboard</span>
+            <div class="nav-section-title">CLINICAL MANAGEMENT</div>
+
+            <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="9"></rect>
+                  <rect x="14" y="3" width="7" height="5"></rect>
+                  <rect x="14" y="12" width="7" height="9"></rect>
+                  <rect x="3" y="16" width="7" height="5"></rect>
+                </svg>
+              </span>
+              <span class="nav-item-text">Clinical Dashboard</span>
             </a>
-            <a routerLink="/patients" routerLinkActive="active" class="nav-item">
-              <span class="nav-icon">👥</span>
-              <span>Patients</span>
+
+            <a routerLink="/patients" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </span>
+              <span class="nav-item-text">Patient Directory (EMPI)</span>
             </a>
-            <a routerLink="/clinical-notes" routerLinkActive="active" class="nav-item">
-              <span class="nav-icon">📋</span>
-              <span>SOAP Notes</span>
+
+            <a routerLink="/clinical-notes" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </span>
+              <span class="nav-item-text">SOAP Clinical Notes</span>
             </a>
-            <a routerLink="/cpoe-orders" routerLinkActive="active" class="nav-item">
-              <span class="nav-icon">🔬</span>
-              <span>CPOE Orders</span>
+
+            <div class="nav-section-title">DIAGNOSTICS & PHARMACY</div>
+
+            <a routerLink="/cpoe-orders" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path>
+                  <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
+                  <path d="M7 16h10"></path>
+                </svg>
+              </span>
+              <span class="nav-item-text">CPOE Orders & Labs</span>
             </a>
-            <a routerLink="/medications" routerLinkActive="active" class="nav-item">
-              <span class="nav-icon">💊</span>
-              <span>E-Prescribe</span>
+
+            <a routerLink="/medications" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+                  <path d="m8.5 8.5 7 7"></path>
+                </svg>
+              </span>
+              <span class="nav-item-text">E-Prescribing (Rx)</span>
             </a>
-            <a routerLink="/interaction-checker" routerLinkActive="active" class="nav-item danger-highlight">
-              <span class="nav-icon">🛡️</span>
-              <span>Drug Safety</span>
+
+            <a routerLink="/interaction-checker" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item safety-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+              </span>
+              <span class="nav-item-text">Drug Safety Engine</span>
+              <span class="safety-badge">Guarded</span>
             </a>
-            <a *ngIf="authService.isAdmin() || authService.isDoctor()" routerLink="/audit-logs" routerLinkActive="active" class="nav-item">
-              <span class="nav-icon">🔒</span>
-              <span>Audit Trail</span>
+
+            <div class="nav-section-title">GOVERNANCE & AUDIT</div>
+
+            <a *ngIf="authService.isAdmin() || authService.isDoctor()" routerLink="/audit-logs" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item">
+              <span class="nav-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <span class="nav-item-text">HIPAA Audit Trail</span>
             </a>
           </ng-container>
 
-          <!-- Patient Portal Link -->
-          <a routerLink="/patient-portal" routerLinkActive="active" class="nav-item portal-tab">
-            <span class="nav-icon">🏥</span>
-            <span>{{ authService.isPatient() ? 'My Health Portal' : 'Patient Portal' }}</span>
+          <div class="nav-section-title">PATIENT ENGAGEMENT</div>
+
+          <a routerLink="/patient-portal" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-link-item portal-item">
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+              </svg>
+            </span>
+            <span class="nav-item-text">{{ authService.isPatient() ? 'My Health Portal' : 'Patient Portal' }}</span>
           </a>
         </nav>
 
-        <!-- Right Side: Profile & Mobile Toggle -->
-        <div class="right-controls">
-          <!-- User Profile Badge (Desktop) -->
-          <div class="user-badge desktop-only" [ngClass]="roleClass()">
-            <span class="user-avatar" [ngClass]="roleClass()">{{ avatarText() }}</span>
-            <div class="user-meta">
-              <div class="user-name-row">
-                <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
-                <span class="online-indicator" title="Connected"></span>
-              </div>
-              <span class="user-role-badge" [ngClass]="roleClass()">{{ formatRole(authService.currentUser()?.role) }}</span>
+        <!-- Sidebar User Footer -->
+        <div class="sidebar-footer">
+          <div class="user-card">
+            <div class="user-avatar" [ngClass]="roleClass()">
+              {{ avatarText() }}
             </div>
-          </div>
-
-          <!-- Sign Out Button (Desktop) -->
-          <button (click)="logout()" class="btn btn-logout desktop-only" title="Sign Out">
-            <span>⏻</span>
-            <span>Sign Out</span>
-          </button>
-
-          <!-- Mobile Hamburger Toggle Button -->
-          <button class="mobile-toggle-btn mobile-only" (click)="toggleMobileMenu()" [attr.aria-expanded]="mobileMenuOpen()" aria-label="Toggle navigation menu">
-            <span class="hamburger-icon">{{ mobileMenuOpen() ? '✕' : '☰' }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Navigation Drawer / Menu -->
-      <div class="mobile-drawer" [class.open]="mobileMenuOpen()">
-        <div class="mobile-drawer-content">
-          <!-- User info header inside mobile menu -->
-          <div class="mobile-user-card" [ngClass]="roleClass()">
-            <div class="avatar-large" [ngClass]="roleClass()">{{ avatarText() }}</div>
-            <div class="mobile-user-info">
-              <div class="mobile-name">{{ authService.currentUser()?.fullName }}</div>
-              <span class="role-pill" [ngClass]="roleClass()">{{ formatRole(authService.currentUser()?.role) }}</span>
+            <div class="user-details">
+              <span class="user-name" [title]="authService.currentUser()?.fullName">{{ authService.currentUser()?.fullName }}</span>
+              <span class="user-role-tag" [ngClass]="roleClass()">{{ formatRole(authService.currentUser()?.role) }}</span>
             </div>
-          </div>
-
-          <!-- Mobile Links List -->
-          <div class="mobile-nav-list">
-            <ng-container *ngIf="!authService.isPatient()">
-              <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">📊</span>
-                <span class="m-text">Clinical Dashboard</span>
-              </a>
-              <a routerLink="/patients" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">👥</span>
-                <span class="m-text">Patient Directory & Vitals</span>
-              </a>
-              <a routerLink="/clinical-notes" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">📋</span>
-                <span class="m-text">Clinical Notes (SOAP)</span>
-              </a>
-              <a routerLink="/cpoe-orders" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">🔬</span>
-                <span class="m-text">CPOE Laboratory & Imaging</span>
-              </a>
-              <a routerLink="/medications" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">💊</span>
-                <span class="m-text">E-Prescriptions</span>
-              </a>
-              <a routerLink="/interaction-checker" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">🛡️</span>
-                <span class="m-text">Drug-Drug Safety Checker</span>
-              </a>
-              <a *ngIf="authService.isAdmin() || authService.isDoctor()" routerLink="/audit-logs" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link">
-                <span class="m-icon">🔒</span>
-                <span class="m-text">HIPAA Audit Logs</span>
-              </a>
-            </ng-container>
-
-            <a routerLink="/patient-portal" routerLinkActive="active" (click)="closeMobileMenu()" class="mobile-nav-link portal-link">
-              <span class="m-icon">🏥</span>
-              <span class="m-text">{{ authService.isPatient() ? 'My Health Portal' : 'Patient Portal' }}</span>
-            </a>
-          </div>
-
-          <!-- Mobile Logout -->
-          <div class="mobile-drawer-footer">
-            <button (click)="logout()" class="btn btn-danger btn-block">
-              <span>⏻</span> Sign Out from CareConnect
+            <button (click)="logout()" class="btn-logout" title="Sign Out from EHR">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
             </button>
           </div>
         </div>
-      </div>
-      <div class="mobile-backdrop" *ngIf="mobileMenuOpen()" (click)="closeMobileMenu()"></div>
-    </header>
+      </aside>
+
+      <!-- Backdrop for mobile drawer -->
+      <div class="sidebar-backdrop" *ngIf="mobileMenuOpen()" (click)="closeMobileMenu()"></div>
+
+    </ng-container>
   `,
   styles: [`
-    .navbar-header {
-      background: rgba(15, 23, 42, 0.96);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      color: white;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      position: sticky;
+    /* Desktop Sidebar Styles */
+    .sidebar-aside {
+      width: 270px;
+      height: 100vh;
+      position: fixed;
       top: 0;
-      z-index: 500;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .nav-top-accent {
-      height: 3px;
-      width: 100%;
-      background: linear-gradient(90deg, #0284c7 0%, #0d9488 40%, #10b981 70%, #0284c7 100%);
-      background-size: 200% 100%;
-      animation: accentGradient 8s ease infinite;
-    }
-
-    @keyframes accentGradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .nav-container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0.65rem 1.75rem;
+      left: 0;
+      bottom: 0;
+      background: #0f172a;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
+      flex-direction: column;
+      z-index: 600;
+      color: #94a3b8;
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Brand */
+    /* Brand Header */
+    .sidebar-brand {
+      padding: 1.25rem 1.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
     .brand-link {
       display: flex;
       align-items: center;
       gap: 0.85rem;
       text-decoration: none;
       color: white;
-      transition: opacity 0.2s;
-
-      &:hover {
-        opacity: 0.95;
-      }
     }
 
-    .brand-icon {
-      font-size: 1.6rem;
-      background: linear-gradient(135deg, #0284c7, #0d9488);
+    .brand-icon-box {
       width: 42px;
       height: 42px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 11px;
       box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .brand-title-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .brand-cross {
+      font-size: 1.55rem;
+      color: white;
+      font-weight: 800;
+      line-height: 1;
     }
 
-    .brand-title {
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .brand-name {
       font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
       color: white;
+      letter-spacing: -0.03em;
       line-height: 1.1;
     }
 
-    .live-pulse-container {
+    .brand-version {
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+    }
+
+    .brand-tagline {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: #64748b;
+      font-weight: 700;
+      margin-top: 0.15rem;
+    }
+
+    /* Telemetry Status Chip */
+    .telemetry-chip {
+      margin: 0.85rem 1.15rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      background: rgba(2, 132, 199, 0.08);
+      border: 1px solid rgba(2, 132, 199, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .t-pulse {
       position: relative;
-      width: 8px;
-      height: 8px;
-      display: inline-flex;
+      width: 10px;
+      height: 10px;
+      display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .live-dot {
+    .t-dot {
       width: 7px;
       height: 7px;
-      background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 8px #10b981;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
     }
 
-    .live-ping {
+    .t-ring {
       position: absolute;
       width: 14px;
       height: 14px;
       border-radius: 50%;
       border: 1.5px solid #10b981;
-      opacity: 0.75;
       animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
 
     @keyframes ping {
       0% { transform: scale(0.8); opacity: 0.8; }
-      100% { transform: scale(2.2); opacity: 0; }
+      100% { transform: scale(2); opacity: 0; }
     }
 
-    .brand-sub {
+    .t-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .t-status {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #34d399;
+      letter-spacing: 0.05em;
+    }
+
+    .t-sub {
       font-size: 0.62rem;
-      letter-spacing: 0.12em;
-      color: #38bdf8;
-      font-weight: 700;
-      display: block;
+      color: #64748b;
       margin-top: 0.1rem;
     }
 
-    /* Desktop Navigation */
-    .nav-links {
+    /* Navigation */
+    .sidebar-nav {
+      flex: 1;
+      padding: 0.5rem 0.85rem;
+      overflow-y: auto;
       display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 0.2rem;
     }
 
-    .nav-item {
-      display: inline-flex;
+    .nav-section-title {
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: #475569;
+      letter-spacing: 0.1em;
+      padding: 0.75rem 0.65rem 0.35rem 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .nav-link-item {
+      display: flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.52rem 0.85rem;
+      gap: 0.75rem;
+      padding: 0.62rem 0.85rem;
       color: #94a3b8;
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       font-weight: 600;
       border-radius: 9px;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      white-space: nowrap;
-      border: 1px solid transparent;
+      position: relative;
 
-      .nav-icon {
-        font-size: 1rem;
+      .nav-item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        transition: color 0.2s;
       }
 
       &:hover {
         color: white;
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.06);
+
+        .nav-item-icon {
+          color: #38bdf8;
+        }
       }
 
       &.active {
         color: white;
         background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-        box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45);
-        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+
+        .nav-item-icon {
+          color: white;
+        }
       }
 
-      &.portal-tab {
-        border: 1px solid rgba(13, 148, 136, 0.45);
+      &.safety-item {
+        .safety-badge {
+          margin-left: auto;
+          font-size: 0.62rem;
+          font-weight: 800;
+          color: #34d399;
+          background: rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          padding: 0.12rem 0.45rem;
+          border-radius: 12px;
+          text-transform: uppercase;
+        }
+
+        &.active .safety-badge {
+          color: white;
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      &.portal-item {
+        border: 1px solid rgba(13, 148, 136, 0.3);
         color: #5eead4;
-        background: rgba(13, 148, 136, 0.1);
+        background: rgba(13, 148, 136, 0.08);
+
+        .nav-item-icon {
+          color: #5eead4;
+        }
 
         &.active {
           background: linear-gradient(135deg, #0d9488, #0f766e);
           color: white;
-          box-shadow: 0 2px 10px rgba(13, 148, 136, 0.45);
+          border-color: rgba(255, 255, 255, 0.2);
+
+          .nav-item-icon {
+            color: white;
+          }
         }
       }
-
-      &.danger-highlight:hover {
-        color: #fca5a5;
-        background: rgba(239, 68, 68, 0.12);
-        border-color: rgba(239, 68, 68, 0.25);
-      }
     }
 
-    /* Right Section */
-    .right-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
+    /* Footer User Profile */
+    .sidebar-footer {
+      padding: 0.85rem 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(11, 19, 41, 0.6);
     }
 
-    .user-badge {
+    .user-card {
       display: flex;
       align-items: center;
-      gap: 0.7rem;
-      padding: 0.35rem 0.85rem;
-      border-radius: 40px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.09);
-        border-color: rgba(255, 255, 255, 0.18);
-      }
+      gap: 0.75rem;
     }
 
     .user-avatar {
-      width: 32px;
-      height: 32px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 800;
       color: white;
+      flex-shrink: 0;
 
       &.role-doctor { background: linear-gradient(135deg, #0284c7, #0369a1); }
       &.role-admin { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
@@ -375,35 +465,27 @@ import { filter } from 'rxjs';
       &.role-patient { background: linear-gradient(135deg, #ec4899, #db2777); }
     }
 
-    .user-meta {
+    .user-details {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      line-height: 1.15;
-    }
-
-    .user-name-row {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
+      overflow: hidden;
+      line-height: 1.2;
     }
 
     .user-name {
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 700;
       color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .online-indicator {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #10b981;
-    }
-
-    .user-role-badge {
+    .user-role-tag {
       font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      margin-top: 0.15rem;
 
       &.role-doctor { color: #38bdf8; }
       &.role-admin { color: #c084fc; }
@@ -412,16 +494,15 @@ import { filter } from 'rxjs';
     }
 
     .btn-logout {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 0.85rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      border-radius: 8px;
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.15);
       background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
 
@@ -429,182 +510,93 @@ import { filter } from 'rxjs';
         background: #ef4444;
         border-color: #ef4444;
         color: white;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        transform: scale(1.05);
       }
     }
 
-    /* Mobile Hamburger Button */
-    .mobile-toggle-btn {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+    /* Mobile Topbar */
+    .mobile-topbar {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 550;
+      background: #0f172a;
+      border-bottom: 2px solid #0284c7;
+      padding: 0.75rem 1rem;
+      align-items: center;
+      justify-content: space-between;
       color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 9px;
+    }
+
+    .mobile-menu-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      font-size: 1.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 1.3rem;
-      transition: background 0.2s;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.16);
-      }
     }
 
-    /* Mobile Drawer */
-    .mobile-drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 84%;
-      max-width: 320px;
-      background: #0f172a;
-      border-left: 2px solid #0284c7;
-      z-index: 1000;
-      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.6);
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow-y: auto;
-
-      &.open {
-        transform: translateX(0);
-      }
-    }
-
-    .mobile-drawer-content {
-      padding: 1.5rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .mobile-user-card {
+    .mobile-brand {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
-      padding: 1.1rem;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 1.35rem;
+      gap: 0.5rem;
     }
 
-    .avatar-large {
-      width: 46px;
-      height: 46px;
+    .mobile-brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .mobile-user-mini {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.75rem;
       font-weight: 800;
-      font-size: 1rem;
       color: white;
-
-      &.role-doctor { background: linear-gradient(135deg, #0284c7, #0369a1); }
-      &.role-admin { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
-      &.role-nurse { background: linear-gradient(135deg, #10b981, #059669); }
-      &.role-patient { background: linear-gradient(135deg, #ec4899, #db2777); }
+      &.role-doctor { background: #0284c7; }
+      &.role-admin { background: #8b5cf6; }
+      &.role-nurse { background: #10b981; }
+      &.role-patient { background: #ec4899; }
     }
 
-    .mobile-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: white;
-      margin-bottom: 0.25rem;
-    }
-
-    .role-pill {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.2rem 0.55rem;
-      border-radius: 20px;
-
-      &.role-doctor { color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
-      &.role-admin { color: #c084fc; background: rgba(192, 132, 252, 0.15); }
-      &.role-nurse { color: #4ade80; background: rgba(74, 222, 128, 0.15); }
-      &.role-patient { color: #f472b6; background: rgba(244, 114, 182, 0.15); }
-    }
-
-    .mobile-nav-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      flex: 1;
-    }
-
-    .mobile-nav-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.8rem 1rem;
-      color: #cbd5e1;
-      text-decoration: none;
-      font-size: 0.92rem;
-      font-weight: 600;
-      border-radius: 9px;
-      transition: all 0.15s ease;
-
-      .m-icon {
-        font-size: 1.2rem;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-      }
-
-      &.active {
-        background: #0284c7;
-        color: white;
-        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
-      }
-
-      &.portal-link {
-        border: 1px solid rgba(13, 148, 136, 0.4);
-        color: #5eead4;
-      }
-    }
-
-    .mobile-drawer-footer {
-      margin-top: 1.5rem;
-      padding-top: 1.15rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-      .btn-block {
-        width: 100%;
-        padding: 0.8rem;
-      }
-    }
-
-    .mobile-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(5px);
-      z-index: 999;
-    }
-
-    /* Visibility Controls */
-    .mobile-only {
+    .sidebar-backdrop {
       display: none;
     }
-    .desktop-only {
-      display: flex;
-    }
 
-    @media (max-width: 1100px) {
+    /* Responsive Breakdown */
+    @media (max-width: 992px) {
       .mobile-only {
         display: flex;
       }
-      .desktop-only {
-        display: none !important;
+
+      .sidebar-aside {
+        transform: translateX(-100%);
+        width: 280px;
+        z-index: 1000;
+
+        &.mobile-open {
+          transform: translateX(0);
+        }
       }
-      .nav-container {
-        padding: 0.65rem 1.15rem;
+
+      .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(4px);
+        z-index: 990;
       }
     }
   `]

@@ -39,10 +39,20 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
           </div>
           <div class="action-buttons">
             <a routerLink="/patients" class="btn btn-secondary">
-              <span>👥</span> Directory
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Patient Directory</span>
             </a>
             <a routerLink="/clinical-notes" class="btn btn-primary">
-              <span>✍️</span> New SOAP Note
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>New SOAP Note</span>
             </a>
           </div>
         </div>
@@ -53,7 +63,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="telemetry-item">
           <div class="telemetry-info">
             <span class="telemetry-label">
-              <span class="t-icon">🏥</span> Hospital Bed Occupancy
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+                <path d="M3 21h18M3 7h18M3 14h18M6 21V3M18 21V3"></path>
+              </svg>
+              <span>Hospital Bed Occupancy</span>
             </span>
             <span class="telemetry-pct">74% Capacity</span>
           </div>
@@ -65,7 +78,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="telemetry-item">
           <div class="telemetry-info">
             <span class="telemetry-label">
-              <span class="t-icon">⚡</span> Lab Turnaround TAT
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <span>Lab Turnaround TAT</span>
             </span>
             <span class="telemetry-pct">96.8% On-Time</span>
           </div>
@@ -77,7 +93,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="telemetry-item">
           <div class="telemetry-info">
             <span class="telemetry-label">
-              <span class="t-icon">🛡️</span> DDI Safety Score
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <span>DDI Safety Engine Score</span>
             </span>
             <span class="telemetry-pct">100% Guarded</span>
           </div>
@@ -92,70 +111,90 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="stat-card card">
           <div class="stat-top">
             <div class="stat-icon-wrapper bg-blue-glow">
-              <span class="stat-icon">👥</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
             </div>
             <span class="badge badge-primary">Demographics</span>
           </div>
           <div class="stat-value">{{ stats.totalPatients }}</div>
           <div class="stat-label">Registered Patients</div>
           <div class="stat-trend trend-positive">
-            <span>↑ Active Cohort</span>
+            <span>↑ Active Cohort Verified</span>
           </div>
         </div>
 
         <div class="stat-card card">
           <div class="stat-top">
             <div class="stat-icon-wrapper bg-teal-glow">
-              <span class="stat-icon">📋</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
             </div>
             <span class="badge badge-teal">Clinical Documentation</span>
           </div>
           <div class="stat-value">{{ stats.openEncounters }}</div>
           <div class="stat-label">Open Encounters (SOAP)</div>
           <div class="stat-trend trend-neutral">
-            <span>● 100% Signed</span>
+            <span>● 100% Signed & Locked</span>
           </div>
         </div>
 
         <div class="stat-card card">
           <div class="stat-top">
             <div class="stat-icon-wrapper bg-warning-glow">
-              <span class="stat-icon">🔬</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path>
+                <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
+              </svg>
             </div>
             <span class="badge badge-warning">CPOE Queue</span>
           </div>
           <div class="stat-value">{{ stats.pendingOrders }}</div>
           <div class="stat-label">Pending Lab & Imaging</div>
           <div class="stat-trend trend-warning">
-            <span>⏳ In Lab Queue</span>
+            <span>⏳ In Specimen Queue</span>
           </div>
         </div>
 
         <div class="stat-card card">
           <div class="stat-top">
             <div class="stat-icon-wrapper bg-success-glow">
-              <span class="stat-icon">💊</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+                <path d="m8.5 8.5 7 7"></path>
+              </svg>
             </div>
             <span class="badge badge-success">Pharmacy</span>
           </div>
           <div class="stat-value">{{ stats.activePrescriptions }}</div>
           <div class="stat-label">Active E-Prescriptions</div>
           <div class="stat-trend trend-positive">
-            <span>✓ Verified Safe</span>
+            <span>✓ Verified No-DDI Conflict</span>
           </div>
         </div>
 
         <div class="stat-card card stat-alert-card">
           <div class="stat-top">
             <div class="stat-icon-wrapper bg-danger-glow">
-              <span class="stat-icon">⚠️</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
             </div>
             <span class="badge badge-danger">High Priority</span>
           </div>
           <div class="stat-value text-danger">{{ stats.abnormalResultsCount }}</div>
           <div class="stat-label">Abnormal Diagnostic Alerts</div>
           <div class="stat-trend trend-danger">
-            <span>🚨 Requires Review</span>
+            <span>🚨 Requires Immediate Review</span>
           </div>
         </div>
       </div>
@@ -164,20 +203,30 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       <div class="quick-nav card">
         <div class="quick-nav-header">
           <span class="quick-nav-title">CareConnect Accelerated Clinical Workflows</span>
-          <span class="badge badge-neutral">Quick Actions</span>
+          <span class="badge badge-neutral">Standard EHR Pathways</span>
         </div>
         <div class="quick-buttons">
           <a routerLink="/cpoe-orders" class="quick-btn">
-            <div class="q-icon-box q-lab">🔬</div>
+            <div class="q-icon-box q-lab">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+                <path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path>
+                <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
+              </svg>
+            </div>
             <div class="q-text">
               <strong>CPOE Laboratory & Imaging</strong>
-              <small>Order diagnostic panels with standard LOINC codes</small>
+              <small>Requisition panels with standard LOINC codes</small>
             </div>
             <span class="q-arrow">→</span>
           </a>
 
           <a routerLink="/medications" class="quick-btn">
-            <div class="q-icon-box q-rx">💊</div>
+            <div class="q-icon-box q-rx">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+                <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+                <path d="m8.5 8.5 7 7"></path>
+              </svg>
+            </div>
             <div class="q-text">
               <strong>E-Prescribing & Pharmacy</strong>
               <small>Prescribe drugs with automated contraindication checks</small>
@@ -186,16 +235,28 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
           </a>
 
           <a routerLink="/interaction-checker" class="quick-btn">
-            <div class="q-icon-box q-safety">🛡️</div>
+            <div class="q-icon-box q-safety">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </div>
             <div class="q-text">
-              <strong>Drug Interaction Safety Engine</strong>
-              <small>Screen concurrent drug pairs for severe hyperkalemia & toxicity</small>
+              <strong>Drug Safety & DDI Engine</strong>
+              <small>Screen concurrent drug pairs for severe clinical toxicity</small>
             </div>
             <span class="q-arrow">→</span>
           </a>
 
           <a routerLink="/clinical-notes" class="quick-btn">
-            <div class="q-icon-box q-soap">📝</div>
+            <div class="q-icon-box q-soap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
             <div class="q-text">
               <strong>SOAP Clinical Notes</strong>
               <small>Document encounters with ICD-10 & digital signatures</small>
@@ -211,14 +272,20 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="card col-card">
           <div class="card-header">
             <div>
-              <h3><span>👥</span> Recent Patient Directory</h3>
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                </svg>
+                <span>Recent Patient Directory</span>
+              </h3>
               <p class="text-sub">Patients scheduled for evaluation and ongoing inpatient/outpatient care.</p>
             </div>
             <div class="header-actions">
               <input 
                 type="text" 
                 class="quick-search-input" 
-                placeholder="Filter patients..." 
+                placeholder="Search patient or MRN..." 
                 [(ngModel)]="patientSearchQuery"
                 (input)="filterDashboardPatients()"
               />
@@ -254,11 +321,11 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
                     <span *ngIf="p.allergies" class="allergy-tag" [title]="p.allergies">
                       ⚠️ {{ p.allergies.length > 25 ? (p.allergies.slice(0, 25) + '...') : p.allergies }}
                     </span>
-                    <span *ngIf="!p.allergies" class="text-sub">NKDA</span>
+                    <span *ngIf="!p.allergies" class="text-sub">NKDA (None)</span>
                   </td>
                   <td>
                     <a [routerLink]="['/patients', p.id]" class="btn btn-secondary btn-sm chart-btn">
-                      Chart <span>→</span>
+                      <span>Chart</span> <span>→</span>
                     </a>
                   </td>
                 </tr>
@@ -274,8 +341,14 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         <div class="card col-card">
           <div class="card-header">
             <div>
-              <h3><span>🔬</span> Clinical Orders & Results Queue</h3>
-              <p class="text-sub">Pending requisitions and flagged abnormal laboratory findings.</p>
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2">
+                  <path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path>
+                  <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
+                </svg>
+                <span>Clinical Orders & Results Queue</span>
+              </h3>
+              <p class="text-sub">Pending diagnostic requisitions and flagged abnormal laboratory findings.</p>
             </div>
             <a routerLink="/cpoe-orders" class="btn btn-secondary btn-sm">Full Worklist</a>
           </div>
@@ -290,7 +363,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
               </div>
               <div class="order-name">{{ o.orderName }}</div>
               <div class="order-details">
-                <span *ngIf="o.loincCode">LOINC: <code>{{ o.loincCode }}</code></span>
+                <span *ngIf="o.loincCode">LOINC: <code class="font-mono">{{ o.loincCode }}</code></span>
                 <span>Patient ID: #{{ o.patientId }}</span>
               </div>
               <div *ngIf="o.flaggedAbnormal" class="abnormal-alert pulse-danger">
@@ -308,9 +381,10 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
   `,
   styles: [`
     .dashboard-page {
+      width: 100%;
+      padding: 1.75rem 2rem;
       max-width: 1440px;
-      margin: 1.5rem auto;
-      padding: 0 1.75rem;
+      margin: 0 auto;
     }
 
     /* Welcome Hero Header */
@@ -471,7 +545,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .telemetry-pct {
@@ -546,7 +620,6 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.35rem;
 
       &.bg-blue-glow { background: #e0f2fe; color: #0284c7; }
       &.bg-teal-glow { background: #ccfbf1; color: #0d9488; }
@@ -642,7 +715,6 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.4rem;
           flex-shrink: 0;
 
           &.q-lab { background: #e0f2fe; }
@@ -711,17 +783,17 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       }
 
       .quick-search-input {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.82rem;
         border: 1px solid var(--slate-300);
         border-radius: 8px;
         outline: none;
-        width: 160px;
+        width: 170px;
         transition: all 0.2s ease;
 
         &:focus {
           border-color: #0284c7;
-          width: 200px;
+          width: 220px;
           box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
       }
@@ -892,8 +964,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
 
     @media (max-width: 768px) {
       .dashboard-page {
-        padding: 0.85rem;
-        margin: 0.5rem auto;
+        padding: 1rem;
       }
       .header-card {
         flex-direction: column;

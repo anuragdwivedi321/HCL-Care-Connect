@@ -24,7 +24,13 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
         <!-- Documentation Editor Form -->
         <div class="editor-col card">
           <div class="editor-header">
-            <h3><span>✍️</span> Document Clinical Encounter</h3>
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+              Document Clinical Encounter
+            </h3>
             <span class="badge badge-teal">SOAP Standard</span>
           </div>
 
@@ -190,9 +196,10 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
   `,
   styles: [`
     .clinical-notes-page {
-      max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
     }
 
     .page-header {

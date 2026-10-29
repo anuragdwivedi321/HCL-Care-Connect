@@ -144,9 +144,10 @@ interface RuleCard {
   `,
   styles: [`
     .checker-page {
-      max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
     }
 
     .page-header {

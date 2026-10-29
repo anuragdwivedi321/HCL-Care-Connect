@@ -80,19 +80,40 @@ import {
       <!-- Clinical Chart Tabs -->
       <div class="chart-tabs">
         <button [class.active]="activeTab === 'summary'" (click)="activeTab = 'summary'" class="tab-btn">
-          <span>📋</span> Demographics & Policy
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Demographics & Policy</span>
         </button>
         <button [class.active]="activeTab === 'vitals'" (click)="activeTab = 'vitals'" class="tab-btn">
-          <span>🩺</span> Vitals Flowsheet ({{ vitals.length }})
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span>Vitals Flowsheet ({{ vitals.length }})</span>
         </button>
         <button [class.active]="activeTab === 'encounters'" (click)="activeTab = 'encounters'" class="tab-btn">
-          <span>📝</span> Clinical SOAP Notes ({{ encounters.length }})
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span>Clinical SOAP Notes ({{ encounters.length }})</span>
         </button>
         <button [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'" class="tab-btn">
-          <span>🔬</span> CPOE Orders ({{ orders.length }})
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path>
+            <line x1="8.5" y1="2" x2="15.5" y2="2"></line>
+          </svg>
+          <span>CPOE Orders ({{ orders.length }})</span>
         </button>
         <button [class.active]="activeTab === 'meds'" (click)="activeTab = 'meds'" class="tab-btn">
-          <span>💊</span> E-Prescriptions ({{ prescriptions.length }})
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path>
+            <path d="m8.5 8.5 7 7"></path>
+          </svg>
+          <span>E-Prescriptions ({{ prescriptions.length }})</span>
         </button>
       </div>
 
@@ -499,9 +520,10 @@ import {
   `,
   styles: [`
     .patient-detail-page {
+      width: 100%;
+      padding: 1.75rem 2rem;
       max-width: 1440px;
-      margin: 1.5rem auto;
-      padding: 0 1.75rem;
+      margin: 0 auto;
     }
 
     .top-nav {

@@ -74,16 +74,34 @@ import {
       <!-- Portal Tabs -->
       <div class="portal-tabs">
         <button [class.active]="activeTab === 'vitals'" (click)="activeTab = 'vitals'" class="tab-link">
-          <span>🩺</span> My Vitals Log ({{ vitals.length }})
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          My Vitals Log ({{ vitals.length }})
         </button>
         <button [class.active]="activeTab === 'results'" (click)="activeTab = 'results'" class="tab-link">
-          <span>🔬</span> Lab & Radiology Results ({{ orders.length }})
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+            <path d="M5.52 16h12.96"></path>
+          </svg>
+          Lab & Radiology Results ({{ orders.length }})
         </button>
         <button [class.active]="activeTab === 'meds'" (click)="activeTab = 'meds'" class="tab-link">
-          <span>💊</span> Active Medications ({{ prescriptions.length }})
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 1 1 7-7l7 7a4.95 4.95 0 0 1-7 7Z"></path>
+            <path d="m8.5 8.5 7 7"></path>
+          </svg>
+          Active Medications ({{ prescriptions.length }})
         </button>
         <button [class.active]="activeTab === 'visits'" (click)="activeTab = 'visits'" class="tab-link">
-          <span>📋</span> Doctor Visit Summaries ({{ encounters.length }})
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Doctor Visit Summaries ({{ encounters.length }})
         </button>
       </div>
 
@@ -251,9 +269,10 @@ import {
   `,
   styles: [`
     .portal-page {
-      max-width: 1300px;
-      margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
     }
 
     .clinician-preview-banner {

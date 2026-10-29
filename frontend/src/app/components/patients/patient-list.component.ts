@@ -18,35 +18,62 @@ import { Patient } from '../../models/ehr.models';
           <p class="subtitle">Search, filter, and register patient medical charts across all clinical departments.</p>
         </div>
         <button (click)="openRegisterModal()" class="btn btn-primary">
-          <span>➕</span> Register New Patient
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Register New Patient</span>
         </button>
       </div>
 
       <!-- Quick Metrics Summary Bar -->
       <div class="metrics-bar card">
         <div class="metric-pill">
-          <span class="m-icon">👥</span>
+          <div class="m-icon bg-blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
           <div>
             <span class="m-val">{{ patients.length }}</span>
             <span class="m-lbl">Total Patients</span>
           </div>
         </div>
         <div class="metric-pill">
-          <span class="m-icon">🚹</span>
+          <div class="m-icon bg-slate">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2">
+              <circle cx="12" cy="7" r="4"></circle>
+              <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path>
+            </svg>
+          </div>
           <div>
             <span class="m-val">{{ getMaleCount() }}</span>
             <span class="m-lbl">Male Cohort</span>
           </div>
         </div>
         <div class="metric-pill">
-          <span class="m-icon">🚺</span>
+          <div class="m-icon bg-purple">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+              <circle cx="12" cy="7" r="4"></circle>
+              <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path>
+            </svg>
+          </div>
           <div>
             <span class="m-val">{{ getFemaleCount() }}</span>
             <span class="m-lbl">Female Cohort</span>
           </div>
         </div>
         <div class="metric-pill alert-pill">
-          <span class="m-icon">⚠️</span>
+          <div class="m-icon bg-danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
           <div>
             <span class="m-val">{{ getChronicCount() }}</span>
             <span class="m-lbl">Chronic Alert Cohort</span>
@@ -58,7 +85,12 @@ import { Patient } from '../../models/ehr.models';
       <div class="card search-card">
         <div class="search-flex">
           <div class="search-bar">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
             <input
               type="text"
               [(ngModel)]="searchQuery"
@@ -72,7 +104,7 @@ import { Patient } from '../../models/ehr.models';
           <!-- Quick Condition Filter Pills -->
           <div class="filter-chips">
             <button (click)="filterCondition('ALL')" [class.active]="activeCondition === 'ALL'" class="chip-btn">
-              All
+              All Cohorts
             </button>
             <button (click)="filterCondition('Hypertension')" [class.active]="activeCondition === 'Hypertension'" class="chip-btn">
               Hypertension (I10)
@@ -144,8 +176,8 @@ import { Patient } from '../../models/ehr.models';
                     <div class="text-sub">DOB: {{ p.dateOfBirth }}</div>
                   </td>
                   <td>
-                    <div>📞 {{ p.phone || 'No phone' }}</div>
-                    <div class="text-sub">📍 {{ p.city }}, {{ p.state }}</div>
+                    <div>{{ p.phone || 'No phone' }}</div>
+                    <div class="text-sub">{{ p.city }}, {{ p.state }}</div>
                   </td>
                   <td>
                     <div *ngIf="p.allergies" class="allergy-badge">
@@ -158,14 +190,20 @@ import { Patient } from '../../models/ehr.models';
                   </td>
                   <td>
                     <button type="button" (click)="openChart(p.id, $event)" class="btn btn-secondary btn-sm chart-btn">
-                      <span>📂</span> Open Chart
+                      <span>View Chart</span>
+                      <span>→</span>
                     </button>
                   </td>
                 </tr>
 
                 <tr *ngIf="filteredPatients.length === 0">
                   <td colspan="6" class="empty-state">
-                    <div class="empty-icon">🔍</div>
+                    <div class="empty-icon">
+                      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                    </div>
                     <strong>No matching patient records found</strong>
                     <p>Try clearing your search query or registering a new patient record.</p>
                   </td>
@@ -180,10 +218,18 @@ import { Patient } from '../../models/ehr.models';
       <div class="modal-backdrop" *ngIf="showModal">
         <div class="modal-dialog">
           <div class="modal-header">
-            <h3><span>👤</span> New Patient Registration (EMPI)</h3>
+            <h3>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              <span>New Patient Registration (EMPI)</span>
+            </h3>
             <div class="modal-header-actions">
               <button type="button" class="btn btn-sm btn-secondary autofill-btn" (click)="autoFillSamplePatient()">
-                <span>🎲</span> Auto-Fill Sample
+                <span>⚡ Auto-Fill Sample</span>
               </button>
               <button class="close-btn" (click)="closeModal()">×</button>
             </div>
@@ -276,7 +322,7 @@ import { Patient } from '../../models/ehr.models';
                 type="text"
                 [(ngModel)]="newPatient.allergies"
                 name="allergies"
-                class="form-control"
+                class="form-control border-danger"
                 placeholder="e.g. Penicillin, NSAIDs, Sulfa drugs (Leave blank if NKDA)"
               />
             </div>
@@ -305,9 +351,10 @@ import { Patient } from '../../models/ehr.models';
   `,
   styles: [`
     .patients-page {
+      width: 100%;
+      padding: 1.75rem 2rem;
       max-width: 1440px;
-      margin: 1.5rem auto;
-      padding: 0 1.75rem;
+      margin: 0 auto;
     }
 
     .page-header {
@@ -317,12 +364,9 @@ import { Patient } from '../../models/ehr.models';
       margin-bottom: 1.5rem;
       flex-wrap: wrap;
       gap: 1rem;
-    }
 
-    .subtitle {
-      color: #64748b;
-      font-size: 0.9rem;
-      margin-top: 0.25rem;
+      h2 { font-size: 1.6rem; }
+      .subtitle { color: #64748b; font-size: 0.9rem; margin-top: 0.2rem; }
     }
 
     /* Metrics Bar */
@@ -344,11 +388,14 @@ import { Patient } from '../../models/ehr.models';
         width: 44px;
         height: 44px;
         border-radius: 12px;
-        background: #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.35rem;
+
+        &.bg-blue { background: #e0f2fe; }
+        &.bg-slate { background: #f1f5f9; }
+        &.bg-purple { background: #ede9fe; }
+        &.bg-danger { background: #fee2e2; }
       }
 
       .m-val {
@@ -366,7 +413,6 @@ import { Patient } from '../../models/ehr.models';
       }
 
       &.alert-pill {
-        .m-icon { background: #fee2e2; }
         .m-val { color: #dc2626; }
       }
     }
@@ -388,16 +434,17 @@ import { Patient } from '../../models/ehr.models';
     .search-bar {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.65rem;
       background: #f8fafc;
       border: 1.5px solid #e2e8f0;
       border-radius: 10px;
-      padding: 0.45rem 0.85rem;
+      padding: 0.5rem 0.85rem;
       flex: 1;
       min-width: 280px;
 
       .search-icon {
-        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
         color: #94a3b8;
       }
 
@@ -573,7 +620,6 @@ import { Patient } from '../../models/ehr.models';
       text-align: center;
 
       .empty-icon {
-        font-size: 2.2rem;
         margin-bottom: 0.5rem;
       }
 
@@ -625,8 +671,7 @@ import { Patient } from '../../models/ehr.models';
 
     @media (max-width: 768px) {
       .patients-page {
-        padding: 0.85rem;
-        margin: 0.5rem auto;
+        padding: 1rem;
       }
       .page-header {
         flex-direction: column;

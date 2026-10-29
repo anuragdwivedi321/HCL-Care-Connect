@@ -16,7 +16,12 @@ import { AuditLog } from '../../models/ehr.models';
           <p class="subtitle">Immutable log recording every view, edit, order, and electronic signature on Protected Health Information (PHI).</p>
         </div>
         <button (click)="loadLogs()" class="btn btn-secondary">
-          <span>🔄</span> Refresh Logs
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Refresh Logs
         </button>
       </div>
 
@@ -100,9 +105,10 @@ import { AuditLog } from '../../models/ehr.models';
   `,
   styles: [`
     .audit-page {
-      max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem;
     }
 
     .page-header {
