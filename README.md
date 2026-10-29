@@ -2,6 +2,7 @@
 
 [![Live Web Application](https://img.shields.io/badge/Netlify-Live%20Demo-teal?style=for-the-badge&logo=netlify)](https://care-connect-ehr-hcl.netlify.app)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/anuragdwivedi321/HCL-Care-Connect)
+[![Oracle Database](https://img.shields.io/badge/Oracle-Database%20XE-F80000?style=for-the-badge&logo=oracle)](https://www.oracle.com/database/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.x-brightgreen?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
 [![Angular](https://img.shields.io/badge/Angular-17-red?style=for-the-badge&logo=angular)](https://angular.dev/)
 [![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk)](https://www.oracle.com/java/)
@@ -140,7 +141,7 @@ npm start
 | **Frontend** | Angular 17, TypeScript, SCSS, RxJS, Lucide Icons |
 | **Backend** | Java 21, Spring Boot 3.3.x, Spring Security, Spring Data JPA |
 | **Security** | JSON Web Tokens (JWT), BCrypt Password Hashing, CORS Configuration |
-| **Database** | H2 In-Memory (Dev) / MySQL / PostgreSQL (Production ready) |
+| **Database** | Oracle Database XE / Oracle 19c/21c (Spring Data JPA & Hibernate, with oracle-schema.sql) |
 | **API Docs** | SpringDoc OpenAPI 3, Swagger UI |
 | **CI/CD** | GitHub Actions (`github/workflow/main.yml`) |
 | **Cloud Hosting** | Netlify Edge CDN (`care-connect-ehr-hcl.netlify.app`) |
