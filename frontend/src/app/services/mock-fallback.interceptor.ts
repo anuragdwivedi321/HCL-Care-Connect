@@ -172,10 +172,11 @@ function appendAuditLog(
 }
 
 export const mockFallbackInterceptor: HttpInterceptorFn = (req, next) => {
+  const isHosted = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      // If network error (status 0: Mixed Content, PNA blocked, server offline, or failed to fetch):
-      if (err.status === 0 || err.status === 504 || err.message?.includes('Failed to fetch')) {
+      // If network error (status 0: Mixed Content, PNA blocked, server offline, or failed to fetch) or on hosted preview:
+      if (err.status === 0 || err.status === 504 || isHosted || err.message?.includes('Failed to fetch')) {
         return handleMock(req);
       }
       return throwError(() => err);
