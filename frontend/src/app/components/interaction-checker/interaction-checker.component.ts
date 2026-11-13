@@ -207,7 +207,7 @@ interface RuleCard {
         font-weight: 600;
         color: #334155;
         cursor: pointer;
-        transition: all 0.15s;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 
         &:hover {
           background: #e0f2fe;

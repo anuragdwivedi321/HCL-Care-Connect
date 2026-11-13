@@ -477,7 +477,7 @@ import { Patient } from '../../models/ehr.models';
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: #e2e8f0;

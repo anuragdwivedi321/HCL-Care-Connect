@@ -481,7 +481,7 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
           font-size: 0.88rem;
           cursor: pointer;
           box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-          transition: all 0.2s ease;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 
           &:hover {
             transform: translateY(-1.5px);
@@ -719,12 +719,13 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
 
       .cc-input {
         padding-left: 2.75rem;
-        height: 46px;
+        height: 48px;
         font-size: 0.95rem;
+        font-family: inherit;
         font-weight: 600;
-        border-radius: 8px;
-        border: 1.5px solid #cbd5e1;
-        transition: all 0.2s ease;
+        border-radius: 10px;
+        border: 1.5px solid var(--slate-300, #cbd5e1);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 
         &:focus {
           border-color: #0284c7;
@@ -744,7 +745,7 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
       border-radius: 12px;
       background: #ffffff;
       overflow: hidden;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
 
       &:hover {
@@ -842,7 +843,7 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
             font-weight: 700;
             color: #334155;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 
             &:hover {
               background: #0284c7;
@@ -860,21 +861,30 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
         .soap-textarea {
           width: 100% !important;
           box-sizing: border-box;
-          min-height: 105px;
-          padding: 0.85rem 1rem;
-          font-size: 0.92rem;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          line-height: 1.6;
-          color: #0f172a;
-          border: 1.5px solid #cbd5e1;
-          border-radius: 8px;
+          min-height: 125px;
+          padding: 1rem 1.15rem;
+          font-size: 0.95rem;
+          font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          font-weight: 500;
+          line-height: 1.65;
+          color: var(--slate-900, #0f172a);
+          border: 1.5px solid var(--slate-300, #cbd5e1);
+          border-radius: 10px;
           background: #ffffff;
-          transition: all 0.2s ease;
+          box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
           resize: vertical;
 
+          &::placeholder {
+            color: var(--slate-400, #94a3b8);
+            font-weight: 400;
+          }
+
           &:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+            border-color: var(--primary, #0284c7);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18), inset 0 1px 2px rgba(15, 23, 42, 0.02);
+            background: #ffffff;
+            outline: none;
           }
         }
       }
@@ -917,7 +927,7 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
           font-size: 0.75rem;
           color: #334155;
           cursor: pointer;
-          transition: all 0.15s ease;
+          transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 
           strong {
             color: #d97706;
@@ -1000,7 +1010,7 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
           box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28);
           color: white;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 
           &:hover:not(:disabled) {
             transform: translateY(-1.5px);
@@ -1077,7 +1087,7 @@ import { ClinicalEncounter, Patient } from '../../models/ehr.models';
       border-radius: 10px;
       padding: 0.95rem;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: #ffffff;

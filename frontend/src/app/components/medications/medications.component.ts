@@ -454,7 +454,7 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
         height: 42px;
         border: 1.5px solid #cbd5e1;
         border-radius: 8px;
-        transition: all 0.2s ease;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
         &:focus {
           border-color: #0284c7;
@@ -734,7 +734,7 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
         padding: 0.2rem 0.45rem;
         font-size: 0.7rem;
         cursor: pointer;
-        transition: all 0.15s;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 
         &:hover {
           background: #e0f2fe;

@@ -363,7 +363,7 @@ import { filter } from 'rxjs';
       font-size: 0.86rem;
       font-weight: 600;
       border-radius: 9px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
 
       .nav-item-icon {
@@ -504,7 +504,7 @@ import { filter } from 'rxjs';
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: #ef4444;

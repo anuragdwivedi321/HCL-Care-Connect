@@ -613,7 +613,7 @@ interface DemoAccount {
       align-items: flex-start;
       gap: 0.85rem;
       backdrop-filter: blur(10px);
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: rgba(255, 255, 255, 0.09);
@@ -734,7 +734,7 @@ interface DemoAccount {
       gap: 0.65rem;
       cursor: pointer;
       text-align: left;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: rgba(2, 132, 199, 0.25);
@@ -824,7 +824,7 @@ interface DemoAccount {
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &.active {
         background: #0284c7;
@@ -1019,7 +1019,7 @@ interface DemoAccount {
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
       margin-top: 0.35rem;
 
       &.btn-primary {

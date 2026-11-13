@@ -676,7 +676,7 @@ import {
       border: none;
       border-radius: 9px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         color: #0f172a;
@@ -702,7 +702,7 @@ import {
       border: 1.5px solid var(--slate-200);
       border-radius: 14px;
       padding: 1.1rem;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         transform: translateY(-2px);

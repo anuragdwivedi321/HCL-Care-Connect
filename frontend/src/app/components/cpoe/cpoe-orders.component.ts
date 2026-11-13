@@ -283,7 +283,7 @@ interface OrderTemplate {
       color: #64748b;
       cursor: pointer;
       border-radius: 8px;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 
       &:hover {
         background: #f1f5f9;
@@ -346,7 +346,7 @@ interface OrderTemplate {
         font-weight: 600;
         color: #334155;
         cursor: pointer;
-        transition: all 0.15s;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 
         &:hover {
           background: #e0f2fe;

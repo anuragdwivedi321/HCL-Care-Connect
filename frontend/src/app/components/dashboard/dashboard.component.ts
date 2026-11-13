@@ -588,7 +588,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       border-radius: 16px;
       border: 1px solid var(--slate-200);
       background: white;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
       &:hover {
         transform: translateY(-3px);
@@ -694,7 +694,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         padding: 0.95rem 1.15rem;
         text-decoration: none;
         color: #1e293b;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
         &:hover {
           background: white;
@@ -789,7 +789,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         border-radius: 8px;
         outline: none;
         width: 170px;
-        transition: all 0.2s ease;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
         &:focus {
           border-color: #0284c7;
@@ -866,7 +866,7 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
       border-radius: 12px;
       padding: 0.95rem 1.1rem;
       background: #f8fafc;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 
       &:hover {
         background: white;
