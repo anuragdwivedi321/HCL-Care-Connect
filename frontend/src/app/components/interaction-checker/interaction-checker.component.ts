@@ -288,6 +288,36 @@ interface RuleCard {
     .mt-4 { margin-top: 1.5rem; }
     .mb-3 { margin-bottom: 1rem; }
     .text-sub { font-size: 0.75rem; color: #64748b; }
+
+    @media (max-width: 768px) {
+      .checker-page {
+        padding: 1rem 0.75rem;
+      }
+      .page-header {
+        margin-bottom: 1rem;
+      }
+      .drugs-selector {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+      .vs-badge {
+        margin: 0 auto;
+      }
+      .quick-pairs {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .checker-page {
+        padding: 0.75rem 0.5rem;
+      }
+      .check-card {
+        padding: 1rem;
+      }
+    }
   `]
 })
 export class InteractionCheckerComponent {

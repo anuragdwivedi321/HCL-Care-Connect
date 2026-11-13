@@ -151,9 +151,33 @@ import { AuditLog } from '../../models/ehr.models';
       color: #0369a1;
     }
 
-    .details-text {
+        .details-text {
       font-size: 0.8rem;
       color: #334155;
+    }
+
+    @media (max-width: 768px) {
+      .audit-page {
+        padding: 1rem 0.75rem;
+      }
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      .filter-row {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .filter-card {
+        padding: 0.85rem 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .audit-page {
+        padding: 0.75rem 0.5rem;
+      }
     }
   `]
 })

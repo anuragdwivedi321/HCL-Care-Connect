@@ -15,10 +15,22 @@ import { filter } from 'rxjs';
       <!-- Mobile Top Bar (Only on screens < 992px) -->
       <header class="mobile-topbar mobile-only">
         <button class="mobile-menu-btn" (click)="toggleMobileMenu()" aria-label="Toggle Navigation">
-          <span>{{ mobileMenuOpen() ? '✕' : '☰' }}</span>
+          <svg *ngIf="!mobileMenuOpen()" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <svg *ngIf="mobileMenuOpen()" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
         <div class="mobile-brand">
-          <span class="brand-cross">⚕</span>
+          <div class="brand-icon-box" style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#0284c7,#0d9488);display:flex;align-items:center;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14m-7-7h14"></path>
+            </svg>
+          </div>
           <span class="mobile-brand-title">CareConnect EHR</span>
         </div>
         <div class="mobile-user-mini" [ngClass]="roleClass()">
@@ -32,7 +44,9 @@ import { filter } from 'rxjs';
         <div class="sidebar-brand">
           <a routerLink="/" class="brand-link" (click)="closeMobileMenu()">
             <div class="brand-icon-box">
-              <span class="brand-cross">⚕</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14m-7-7h14"></path>
+              </svg>
             </div>
             <div class="brand-titles">
               <div class="brand-name-row">
@@ -584,6 +598,7 @@ import { filter } from 'rxjs';
         transform: translateX(-100%);
         width: 280px;
         z-index: 1000;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
         &.mobile-open {
           transform: translateX(0);

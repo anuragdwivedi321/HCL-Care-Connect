@@ -1,5 +1,8 @@
 .ehr-app-shell {
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
 
@@ -7,13 +10,20 @@
     .main-content-viewport {
       margin-left: 270px;
       min-height: 100vh;
-      background: #f8fafc;
-      transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      width: calc(100% - 270px);
+      max-width: calc(100vw - 270px);
+      background: var(--slate-50, #f8fafc);
+      transition: margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+      overflow-x: clip;
     }
 
     @media (max-width: 992px) {
       .main-content-viewport {
         margin-left: 0;
+        width: 100%;
+        max-width: 100vw;
       }
     }
   }
@@ -21,7 +31,11 @@
   &:not(.has-sidebar) {
     .main-content-viewport {
       margin-left: 0;
+      width: 100%;
+      max-width: 100vw;
       min-height: 100vh;
+      box-sizing: border-box;
+      overflow-x: clip;
     }
   }
 }
