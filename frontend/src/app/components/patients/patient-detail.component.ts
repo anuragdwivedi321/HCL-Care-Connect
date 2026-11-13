@@ -959,6 +959,43 @@ import {
         gap: 0;
       }
     }
+
+    @media (max-width: 768px) {
+      .patient-banner .safety-alerts {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
+      .tab-btn {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .patient-detail-page {
+        padding: 0.75rem 0.5rem;
+      }
+      .patient-banner .banner-main {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .patient-banner .meta-row {
+        justify-content: center;
+      }
+      .patient-banner .demographics-line {
+        justify-content: center;
+        font-size: 0.8rem;
+      }
+      .tab-btn {
+        padding: 0.5rem 0.65rem;
+        font-size: 0.75rem;
+      }
+      .tab-btn svg {
+        display: none;
+      }
+    }
+
   `]
 })
 export class PatientDetailComponent implements OnInit {

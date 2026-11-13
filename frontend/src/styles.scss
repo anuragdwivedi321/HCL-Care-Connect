@@ -670,3 +670,705 @@ img, svg, video, canvas {
   h2 { font-size: 1.3rem !important; }
   h3 { font-size: 1.15rem !important; }
 }
+
+
+/* ============================================================
+   PREMIUM GLOBAL UI ENHANCEMENTS — CareConnect EHR v2 Pro
+   Applied: Impeccable + Hallmark design principles
+   ============================================================ */
+
+/* Premium Page Header — used across all pages */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+    font-weight: 800;
+    color: var(--slate-900);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    margin-top: 0.3rem;
+    font-weight: 500;
+  }
+}
+
+/* Better ehr-table row interaction */
+.ehr-table {
+  tr.clickable-row {
+    cursor: pointer;
+  }
+
+  tr:hover td {
+    background-color: var(--primary-light) !important;
+  }
+
+  tr.clickable-row:hover td {
+    background-color: var(--primary-light) !important;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+}
+
+/* Text utility helpers */
+.text-danger { color: var(--danger) !important; }
+.text-warning { color: var(--warning-hover) !important; }
+.text-success { color: var(--success-hover) !important; }
+.text-primary { color: var(--primary) !important; }
+.text-muted { color: var(--slate-400) !important; }
+.text-sub {
+  font-size: 0.75rem;
+  color: var(--slate-500);
+  margin-top: 0.1rem;
+}
+
+/* Font mono utility */
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Premium stat value */
+.stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Page-level section divider */
+.section-divider {
+  border: none;
+  border-top: 1.5px solid var(--slate-100);
+  margin: 1.5rem 0;
+}
+
+/* Info list pattern — label/value pairs */
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--slate-100);
+    font-size: 0.875rem;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: var(--slate-500);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .val {
+      color: var(--slate-800);
+      font-weight: 500;
+      text-align: right;
+    }
+  }
+}
+
+/* Grid layout helpers */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Premium empty-state */
+.empty-state {
+  padding: 3.5rem 2rem;
+  text-align: center;
+  color: var(--slate-400);
+
+  strong {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--slate-600);
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--slate-400);
+    margin-top: 0.25rem;
+  }
+
+  .empty-icon {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+}
+
+/* Loading state cell */
+.table-state-cell {
+  padding: 3rem !important;
+  text-align: center;
+  color: var(--slate-500);
+
+  .table-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--slate-200);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 1rem;
+  }
+}
+
+/* Chip / Filter buttons */
+.chip-btn {
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1.5px solid var(--slate-200);
+  background: white;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  color: var(--slate-600);
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  &.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px var(--primary-glow);
+  }
+}
+
+/* Patient avatar — consistent across all pages */
+.patient-avatar {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
+  color: white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.28);
+  letter-spacing: 0.03em;
+}
+
+.patient-avatar-mini {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
+  color: white;
+  font-weight: 800;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+}
+
+/* Patient name */
+.patient-name {
+  font-weight: 700;
+  color: var(--slate-900);
+  font-size: 0.9rem;
+}
+
+/* Demographics text */
+.demographics-text {
+  font-size: 0.875rem;
+  color: var(--slate-700);
+}
+
+/* Allergy badge */
+.allergy-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #b91c1c;
+  background: #fff1f1;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  margin-bottom: 0.2rem;
+}
+
+/* Conditions tag */
+.conditions-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  margin-top: 0.2rem;
+}
+
+/* Blood badge */
+.blood-badge {
+  font-size: 0.72rem;
+  color: var(--slate-500);
+  margin-top: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  .blood-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+    display: inline-block;
+  }
+}
+
+/* Chart action button */
+.chart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--primary);
+  border-color: var(--primary);
+  font-weight: 600;
+
+  &:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+}
+
+/* Tab Navigation — shared across patient-detail etc. */
+.chart-tabs {
+  display: flex;
+  gap: 0.3rem;
+  border-bottom: 2px solid var(--slate-200);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  background: transparent;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.18s ease, border-color 0.18s ease;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+
+  &:hover {
+    color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  &.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 700;
+  }
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.75;
+  }
+}
+
+/* Tab content */
+.tab-content {
+  animation: fadeIn 0.18s ease-out;
+}
+
+/* Patient detail banner */
+.patient-banner {
+  margin-bottom: 1.5rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--teal) 100%);
+  }
+
+  .banner-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding-left: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .patient-meta {
+    flex: 1;
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.4rem;
+
+      h2 {
+        font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+        font-weight: 800;
+        color: var(--slate-900);
+      }
+    }
+
+    .demographics-line {
+      font-size: 0.875rem;
+      color: var(--slate-500);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      line-height: 1.6;
+    }
+  }
+
+  .safety-alerts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .alert-box {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .alert-title {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .alert-content {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    &.allergy-box {
+      background: var(--danger-surface);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+
+      .alert-title { color: #b91c1c; }
+      .alert-content { color: #7f1d1d; }
+    }
+
+    &.conditions-box {
+      background: var(--warning-surface);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+
+      .alert-title { color: #b45309; }
+      .alert-content { color: #78350f; }
+    }
+  }
+}
+
+/* Top nav breadcrumb */
+.top-nav {
+  margin-bottom: 1rem;
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--slate-500);
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}
+
+/* Detail state card (loading/error) */
+.detail-state-card {
+  padding: 4rem 2rem;
+  text-align: center;
+
+  .detail-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--slate-200);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 1.25rem;
+  }
+}
+
+/* MRN badge — always font-mono */
+.mrn-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Metrics bar / quick summary pills */
+.metrics-bar {
+  display: flex;
+  gap: 0;
+  padding: 0;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+
+  .metric-pill {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 1.35rem;
+    border-right: 1px solid var(--slate-200);
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.alert-pill {
+      background: #fff8f8;
+    }
+
+    .m-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      &.bg-blue { background: var(--primary-surface); }
+      &.bg-slate { background: var(--slate-100); }
+      &.bg-purple { background: var(--purple-surface); }
+      &.bg-danger { background: var(--danger-surface); }
+    }
+
+    .m-val {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--slate-900);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .m-lbl {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+
+    .metric-pill {
+      flex: 1 1 calc(50% - 1px);
+      border-bottom: 1px solid var(--slate-200);
+
+      &:nth-child(even) {
+        border-right: none;
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    flex-direction: column;
+
+    .metric-pill {
+      flex: 1 1 100%;
+      border-right: none;
+    }
+  }
+}
+
+/* Search card / toolbar card */
+.search-card {
+  margin-bottom: 1.25rem;
+  padding: 1.1rem 1.35rem;
+}
+
+.search-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: var(--slate-50);
+  border: 1.5px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  padding: 0 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3.5px rgba(2, 132, 199, 0.12);
+    background: white;
+  }
+
+  .search-icon {
+    color: var(--slate-400);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.65rem 0;
+    font-size: 0.9rem;
+    color: var(--slate-800);
+    outline: none;
+    font-family: inherit;
+
+    &::placeholder {
+      color: var(--slate-400);
+    }
+  }
+}
+
+.filter-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Patient profile cell in tables */
+.patient-profile-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+/* Responsive columns grid for 640px */
+@media (max-width: 640px) {
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .chart-tabs {
+    gap: 0;
+  }
+
+  .tab-btn {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  .metrics-bar {
+    flex-direction: column !important;
+
+    .metric-pill {
+      border-right: none !important;
+      border-bottom: 1px solid var(--slate-200);
+      flex: 1 1 100% !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .patient-banner {
+    .banner-main {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .meta-row {
+      justify-content: center;
+    }
+
+    .demographics-line {
+      justify-content: center;
+    }
+  }
+
+  .search-bar {
+    flex-wrap: wrap;
+  }
+
+  .filter-chips {
+    gap: 0.35rem;
+  }
+
+  .chip-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}

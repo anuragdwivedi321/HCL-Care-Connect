@@ -410,6 +410,24 @@ interface OrderTemplate {
         gap: 0;
       }
     }
+
+    @media (max-width: 640px) {
+      .order-filters {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .filter-tab {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cpoe-page {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+
   `]
 })
 export class CpoeOrdersComponent implements OnInit {

@@ -691,6 +691,19 @@ import {
         padding: 0.75rem;
       }
     }
+
+    @media (max-width: 640px) {
+      .portal-page {
+        padding: 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .portal-page {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+
   `]
 })
 export class PatientPortalComponent implements OnInit {

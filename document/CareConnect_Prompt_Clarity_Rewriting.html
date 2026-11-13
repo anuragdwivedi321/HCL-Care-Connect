@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CareConnect EHR - Prompt Clarity &amp; Rewriting Engineering Log</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Consolas&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: #0b0f14;
+    color: #e6edf3;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative;
+    padding: 9mm 12mm 7mm 12mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #0b0f14;
+    overflow: hidden;
+  }
+
+  /* Cover Page */
+  .cover-page {
+    padding: 22mm 20mm;
+    background: radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 55%),
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.14) 0%, transparent 50%),
+                #070a0e;
+    justify-content: space-between;
+  }
+
+  /* Windows 11 Desktop Style Window Header */
+  .win-window {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-bottom: 7px;
+    flex-grow: 1;
+  }
+
+  .win-titlebar {
+    height: 32px;
+    background: #0d1117;
+    border-bottom: 1px solid #21262d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 0 14px;
+    user-select: none;
+  }
+
+  .win-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #8b949e;
+    font-weight: 500;
+  }
+
+  .win-controls {
+    display: flex;
+    height: 100%;
+  }
+
+  .win-btn {
+    width: 42px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8b949e;
+    font-size: 10px;
+  }
+
+  /* Subbar */
+  .agy-subbar {
+    background: #11161d;
+    border-bottom: 1px solid #21262d;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: #8b949e;
+  }
+
+  .agy-badge {
+    background: rgba(88, 166, 255, 0.12);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    color: #58a6ff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* Window Content */
+  .win-content {
+    padding: 10px 14px;
+    background: #0d1117;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    flex-grow: 1;
+  }
+
+  /* Comparison Grid (Raw Vague Prompt vs Rewritten Clear Prompt) */
+  .prompt-comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Box 1: Raw / Ambiguous Prompt */
+  .box-raw {
+    background: #161b22;
+    border: 1px solid #da3633;
+    border-left: 4px solid #f85149;
+    border-radius: 6px;
+    padding: 8px 11px;
+  }
+
+  .box-header-raw {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 700;
+    color: #f85149;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+
+  .badge-issue {
+    background: rgba(248, 81, 73, 0.18);
+    color: #ff7b72;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .text-raw {
+    font-family: 'Consolas', monospace;
+    font-size: 10.5px;
+    color: #ffa198;
+    line-height: 1.4;
+  }
+
+  .critique-text {
+    font-size: 9.5px;
+    color: #8b949e;
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+
+  /* Box 2: Rewritten High-Clarity Antigravity Prompt */
+  .box-rewritten {
+    background: #161b22;
+    border: 1.5px solid #238636;
+    border-left: 4px solid #3fb950;
+    border-radius: 6px;
+    padding: 9px 12px;
+    box-shadow: 0 0 0 2px rgba(63, 185, 80, 0.12);
+  }
+
+  .box-header-rewritten {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 700;
+    color: #3fb950;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 5px;
+  }
+
+  .badge-improved {
+    background: rgba(63, 185, 80, 0.18);
+    color: #56d364;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  .text-rewritten {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #f0f6fc;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .prompt-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #21262d;
+    margin-top: 6px;
+    padding-top: 5px;
+    font-size: 9.5px;
+    color: #7d8590;
+  }
+
+  /* Agent Execution Card */
+  .agent-block {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 8px 11px;
+  }
+
+  .agent-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #58a6ff;
+    margin-bottom: 4px;
+  }
+
+  .agent-desc {
+    font-size: 10px;
+    color: #c9d1d9;
+    line-height: 1.4;
+  }
+
+  .tool-tag {
+    font-family: 'Consolas', monospace;
+    font-size: 9px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    color: #79c0ff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  /* Bottom Panels */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 4px;
+  }
+
+  .bottom-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 7px 11px;
+  }
+
+  .bottom-card h4 {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #8b949e;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .clarity-list {
+    list-style: none;
+  }
+
+  .clarity-list li {
+    font-size: 9.5px;
+    color: #c9d1d9;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 11px;
+    margin-bottom: 2px;
+  }
+
+  .clarity-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #3fb950;
+    font-weight: bold;
+  }
+
+  .file-badge-small {
+    font-family: 'Consolas', monospace;
+    font-size: 8.5px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    color: #a5d6ff;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #21262d;
+    padding-top: 5px;
+    font-size: 9px;
+    color: #7d8590;
+    margin-top: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="page cover-page">
+  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #21262d; padding-bottom: 14px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 32px; height: 32px; background: #238636; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; color: white;">⚡</div>
+      <div>
+        <div style="font-size: 16px; font-weight: 700; color: #f0f6fc;">Prompt Clarity &amp; Rewriting Dossier</div>
+        <div style="font-size: 11px; color: #7d8590;">Windows 11 x64 • Antigravity Agent • CareConnect EHR</div>
+      </div>
+    </div>
+    <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-size: 10.5px; font-weight: 600; padding: 4px 10px; border-radius: 14px;">
+      ● OPTIMIZATION REPORT
+    </div>
+  </div>
+
+  <div style="margin: auto 0;">
+    <div style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;">
+      PROMPT ENGINEERING &amp; REWRITING BENCHMARK
+    </div>
+    <h1 style="font-size: 32px; font-weight: 800; line-height: 1.25; color: #ffffff; margin-bottom: 14px;">
+      Prompt Clarity &amp; Rewriting<br>
+      <span style="color: #38bdf8;">Before vs After Screenshots</span><br>
+      CareConnect EHR Project
+    </h1>
+    <p style="font-size: 13.5px; color: #8b949e; line-height: 1.6; max-width: 560px; margin-bottom: 24px;">
+      A comparative study demonstrating how raw, ambiguous, or conversational developer prompts were systematically rewritten into high-clarity, context-rich, instruction-dense prompts to produce enterprise-grade, deterministic code in Antigravity.
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 560px;">
+      <div style="background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 12px;">
+        <div style="font-size: 18px; font-weight: 700; color: #f85149;">Vague vs Clear</div>
+        <div style="font-size: 10px; color: #7d8590;">Direct Side-by-Side Comparison</div>
+      </div>
+      <div style="background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 12px;">
+        <div style="font-size: 18px; font-weight: 700; color: #3fb950;">10 Critical Modules</div>
+        <div style="font-size: 10px; color: #7d8590;">End-to-End EHR Architecture</div>
+      </div>
+      <div style="background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 12px;">
+        <div style="font-size: 18px; font-weight: 700; color: #58a6ff;">Zero Ambiguity</div>
+        <div style="font-size: 10px; color: #7d8590;">Deterministic Tool Calling</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; border-top: 1px solid #21262d; padding-top: 14px; font-size: 11px; color: #7d8590;">
+    <div>
+      <span style="color: #c9d1d9; font-weight: 600;">Workspace:</span> C:\Users\91905\OneDrive\Desktop\HCL Project<br>
+      <span style="color: #c9d1d9; font-weight: 600;">Live Web Application:</span> care-connect-ehr-hcl.netlify.app
+    </div>
+    <div style="text-align: right;">
+      <span style="color: #c9d1d9; font-weight: 600;">Framework:</span> Antigravity Prompt Rewriting Protocol<br>
+      <span style="color: #c9d1d9; font-weight: 600;">Operating System:</span> Windows 11 Desktop
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #01
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #01</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Backend Authentication & Security: Spring Security 6 & Stateless JWT RBAC</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"login aur register bna do spring boot me role ke sath aur jwt bhi lga dena"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> High Ambiguity: Lacks cryptographic algorithms, token claim definitions, role enumerations, and HTTP security filter constraints.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Act as a Senior Spring Security Architect. Implement stateless HIPAA-compliant authentication for CareConnect EHR:
+1. Define User entity and Role enum (ROLE_DOCTOR, ROLE_NURSE, ROLE_ADMIN, ROLE_PATIENT).
+2. Create JwtService using HMAC-SHA256 (io.jsonwebtoken) with claims: username, role, and userId; set 24h expiration.
+3. Implement JwtAuthenticationFilter extending OncePerRequestFilter to parse Authorization: Bearer <token> and set SecurityContextHolder.
+4. Configure SecurityFilterChain: permit /api/auth/**, disable CSRF/session management (SessionCreationPolicy.STATELESS), and restrict /api/audit/** to ROLE_ADMIN.
+5. Create AuthController with /login and /register returning AuthResponse (token, user details, role).</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file SecurityConfig.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file JwtService.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file AuthController.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Explicit HMAC-SHA256 crypto standard & token lifetime (24h)</li><li>Defined exact 4 roles with Spring Security 'ROLE_' prefixes</li><li>Stateless session policy specified to prevent CSRF vulnerabilities</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">SecurityConfig.java</span> <span class="file-badge-small">JwtService.java</span> <span class="file-badge-small">AuthController.java</span> <span class="file-badge-small">User.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 2 of 11 (Case 1 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #02
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #02</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Patient Directory & EMPI: Enterprise Master Patient Index & Auto-MRN</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"patient ka data store krne ka backend bnao aur mrn generate kro"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Missing Schema Specs: No demographic constraints, no MRN format specification, no race condition handling.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Develop the Enterprise Master Patient Index (EMPI) module for CareConnect EHR adhering to HL7 patient schema:
+1. Create Patient JPA entity with fields: id, mrn (unique index), firstName, lastName, dob, gender, bloodGroup, contactNumber, emergencyContact, insuranceProvider, and allergies string.
+2. Implement thread-safe automated MRN generation logic in the format 'MRN-YYYY-XXXX' where YYYY is the current calendar year and XXXX is zero-padded sequential ID.
+3. Write PatientRepository with Spring Data Specification for debounced multi-criteria search (by MRN, lastName, or contact number).
+4. Build PatientService and PatientController with CRUD endpoints restricted to DOCTOR, NURSE, and ADMIN roles.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file Patient.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file PatientRepository.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file PatientController.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Deterministic MRN format specified: 'MRN-YYYY-XXXX'</li><li>Clinical safety fields added (persistent allergies & emergency contacts)</li><li>Dynamic multi-parameter search specified instead of basic findById</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">Patient.java</span> <span class="file-badge-small">PatientRepository.java</span> <span class="file-badge-small">PatientService.java</span> <span class="file-badge-small">PatientController.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 3 of 11 (Case 2 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #03
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #03</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Clinical Documentation: Physician SOAP Notes & Electronic Signature Lock</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"doctor clinical notes likh sake aisa kuch bna do"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Unstructured Requirement: Does not specify clinical documentation standards (SOAP), diagnosis coding, or legal locking.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Construct the Clinical Documentation engine for CareConnect EHR using the standard medical SOAP structure:
+1. Create ClinicalEncounter entity mapped @ManyToOne to Patient and @ManyToOne to User (Physician).
+2. Structure the clinical data model into explicit SOAP sections:
+   - S (Subjective): Chief complaint, History of Present Illness (HPI), patient symptoms.
+   - O (Objective): Physical exam findings and vital sign observations.
+   - A (Assessment): Primary and differential diagnoses linked with standardized ICD-10 codes.
+   - P (Plan): Therapeutic treatment roadmap, orders, counseling, and follow-up timeline.
+3. Implement digital lock mechanism: status (DRAFT, FINALIZED), signedBy, and signedAt timestamp. Finalized notes are immutable (throw 403 on edit attempt).
+4. Expose REST endpoints in EncounterController with validation enforcing that only authenticated doctors can sign notes.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file ClinicalEncounter.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file EncounterRepository.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file EncounterController.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Enforced international medical documentation standard (SOAP)</li><li>Integrated ICD-10 diagnostic coding dictionary</li><li>Added legal medical record finalization locking mechanism</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">ClinicalEncounter.java</span> <span class="file-badge-small">EncounterDto.java</span> <span class="file-badge-small">EncounterService.java</span> <span class="file-badge-small">EncounterController.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 4 of 11 (Case 3 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #04
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #04</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Biometrics & Triage: Vital Signs Flowsheet & Real-Time BMI Calculation</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"vitals save krna h bp sugar wagera aur bmi calculate kr do"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Vague Metrics: Missing mathematical rounding, clinical threshold alerts, and longitudinal recording requirements.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Implement the Vital Signs Flowsheet and Biometric calculation engine:
+1. Create VitalSign entity: systolicBp, diastolicBp, heartRate, respiratoryRate, temperatureCelsius, oxygenSaturation (SpO2), heightCm, weightKg, bmi, and recordedAt.
+2. Implement automated BMI calculation: BMI = weightKg / ((heightCm / 100) ^ 2), rounded to 1 decimal place, with category mapping (Underweight, Normal, Overweight, Obese).
+3. Build clinical threshold safety alerts: automatically trigger STAT flags if Systolic BP > 180 mmHg, Diastolic BP > 110 mmHg, SpO2 < 90%, or Heart Rate > 120 bpm.
+4. Expose endpoints in EncounterController to record triage vitals and retrieve chronological longitudinal vitals history for trend analysis.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file VitalSign.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file VitalSignDto.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> edit_file PatientService.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Exact mathematical formula & rounding precision specified</li><li>Medical triage boundary thresholds defined for STAT alerts</li><li>Longitudinal time-series storage enabled for trend graphing</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">VitalSign.java</span> <span class="file-badge-small">VitalSignDto.java</span> <span class="file-badge-small">Patient.java</span> <span class="file-badge-small">EncounterController.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 5 of 11 (Case 4 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #05
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #05</span>
+        <span style="color: #c9d1d9; font-weight: 600;">CPOE & Diagnostics: Computerized Physician Order Entry (LOINC Lab & Radiology)</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"lab test aur xray ka order system bnao doctor ke liye"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Missing Clinical Codes: No LOINC standard, no technician fulfillment workflow, no urgency prioritization.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Develop the Computerized Physician Order Entry (CPOE) subsystem for diagnostic requisitions:
+1. Create MedicalOrder entity: orderNumber, orderType (LAB, RADIOLOGY, PROCEDURE), testName, loincCode, priority (ROUTINE, URGENT, STAT), orderStatus (PLACED, IN_PROGRESS, COMPLETED, CANCELLED), and clinicalNotes.
+2. Seed verified LOINC catalog: Complete Blood Count (58410-2), Lipid Panel (57698-3), Basic Metabolic Panel (24320-4), Chest X-Ray 2-Views (36554-4).
+3. Build technician fulfillment workflow: Diagnostic technicians update result values, specify biological reference ranges, and toggle abnormal result flags.
+4. Expose OrderController endpoints with role-based routing (Doctors place orders; Technicians/Nurses report results).</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file MedicalOrder.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file OrderRepository.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file OrderController.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>LOINC healthcare coding standards integrated</li><li>Urgency triage prioritization queue (ROUTINE, URGENT, STAT)</li><li>Two-sided workflow: Doctor requisitioning vs Technician reporting</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">MedicalOrder.java</span> <span class="file-badge-small">OrderDto.java</span> <span class="file-badge-small">OrderService.java</span> <span class="file-badge-small">OrderController.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 6 of 11 (Case 5 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 6 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #06
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #06</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Pharmacy & Clinical Safety: Real-Time Drug-Drug Interaction (DDI) & E-Prescribing</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"prescription likhne ka option do aur dekho koi galat medicine to nahi di"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Zero Safety Rules: Lacks drug interaction database, contraindication severity levels, and RxNorm codes.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Architect an intelligent Drug-Drug Interaction (DDI) safety engine and e-prescribing system:
+1. Create Prescription entity (medicationName, rxNormCode, dosage, route, frequency, startDate, endDate) and DrugInteractionRule entity (drugA, drugB, severityLevel, warningText).
+2. Pre-seed high-risk clinical contraindications:
+   - Warfarin + Aspirin -> CRITICAL: Severe risk of fatal internal hemorrhage.
+   - Lisinopril + Spironolactone -> MAJOR: Risk of severe hyperkalemia and cardiac arrhythmia.
+   - Metformin + Contrast Dye -> MAJOR: Risk of contrast-induced acute lactic acidosis.
+3. Implement MedicationService.checkInteractions() that cross-references newly drafted prescriptions against all currently active patient medications.
+4. Expose POST /api/medications/check-interactions returning flagged contraindications with severity and clinical recommendations.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file Prescription.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file DrugInteractionRule.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file MedicationService.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Explicit contraindicated drug pairs seeded with clinical rationales</li><li>Severity classification established (CRITICAL, MAJOR, MODERATE)</li><li>Automated pre-order validation API prevents unsafe prescribing</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">Prescription.java</span> <span class="file-badge-small">DrugInteractionRule.java</span> <span class="file-badge-small">MedicationService.java</span> <span class="file-badge-small">MedicationController.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 7 of 11 (Case 6 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 7 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #07
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #07</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Governance & Compliance: HIPAA Security Audit Trail & Immutable PHI Logs</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"audit trail lga do kon kya kr rha h dekhne ke liye"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Legal Ambiguity: No compliance standard (HIPAA), no immutability guarantee, no async performance design.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Implement a HIPAA Title II compliant Security & Audit Logging subsystem for Protected Health Information (PHI):
+1. Create AuditLog entity: id, userId, username, userRole, action (VIEW_PATIENT_CHART, CREATE_ORDER, SIGN_NOTE, EXPORT_RECORD), resourceType, resourceId, ipAddress, timestamp, and status.
+2. Build an asynchronous Spring event listener (@Async) or AOP aspect (@AuditAction) to capture PHI access without adding latency to clinical HTTP requests.
+3. Ensure immutability: The audit repository must expose NO update or delete methods; audit records cannot be altered.
+4. Create AuditController restricted strictly to ROLE_ADMIN with multi-criteria filtering by date range, user, action, and patient MRN.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file AuditLog.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file AuditLogRepository.java</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file AuditController.java</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Strict HIPAA Title II regulatory compliance alignment</li><li>Asynchronous non-blocking architecture preserves API performance</li><li>Guaranteed immutable log design prevents audit tampering</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">AuditLog.java</span> <span class="file-badge-small">AuditLogRepository.java</span> <span class="file-badge-small">AuditService.java</span> <span class="file-badge-small">AuditController.java</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 8 of 11 (Case 7 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 8 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #08
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #08</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Frontend Architecture: Angular 17 Standalone Architecture & JWT Interceptor</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"frontend me angular lga ke login screen aur navbar bnao"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Legacy Paradigm: Could lead to obsolete NgModule structure, missing Bearer token interceptor, and unhandled 401 redirects.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Initialize the Angular 17 enterprise frontend client using modern standalone component architecture:
+1. Configure standalone components with provideHttpClient(withInterceptors()) and provideRouter() in main.ts.
+2. Implement AuthService managing current user session using RxJS BehaviorSubject and localStorage; provide hasRole() helpers.
+3. Build JwtInterceptor to automatically attach Authorization: Bearer <token> header to all outgoing /api requests.
+4. Implement AuthGuard and RoleGuard to guard private clinical routes and redirect unauthenticated users to /login.
+5. Create modern NavbarComponent with user profile badge, active role indicator, and conditional navigation links based on permissions.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file main.ts</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file auth.service.ts</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file jwt.interceptor.ts</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file navbar.component.ts</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Enforced modern Angular 17 standalone architecture (zero NgModules)</li><li>Automatic HTTP Bearer header injection via functional interceptor</li><li>Declarative route protection with granular role-based guards</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">main.ts</span> <span class="file-badge-small">app.routes.ts</span> <span class="file-badge-small">auth.service.ts</span> <span class="file-badge-small">jwt.interceptor.ts</span> <span class="file-badge-small">navbar.component.ts</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 9 of 11 (Case 8 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 9 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #09
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #09</span>
+        <span style="color: #c9d1d9; font-weight: 600;">Clinical User Interface: 360-Degree Medical Record Chart & Tabbed Patient View</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"patient page bnao jisme details dikhe"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Undefined UI Structure: Doesn't specify multi-tab EHR navigation, safety alert banners, or vitals graphs.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Develop the PatientsComponent and PatientDetailComponent in Angular 17 for comprehensive clinical chart review:
+1. Patient Directory: Debounced search by MRN or Name, filter by gender/blood group, and responsive patient census table.
+2. Patient Registration Modal: Form with reactive validation (Name, DOB, Gender, Emergency Contact, Allergies).
+3. 360° Medical Record View with structured clinical tabs:
+   - Demographics & Safety: Emergency contacts, insurance, persistent high-visibility allergy warning banner.
+   - Encounters: Chronological SOAP notes with doctor digital signature certification badges.
+   - Vitals Flowsheet: Historical vitals table with calculated BMI indicators and abnormal triage flags.
+   - Orders: Active LOINC diagnostic requisitions with live status pills.
+   - Medications: Current prescriptions and dosage timeline.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file patients.component.ts</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file patients.component.html</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file patient.service.ts</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Designed holistic 360° patient medical record layout</li><li>Persistent high-visibility allergy safety banner permanently visible</li><li>Multi-tab organization mirrors real-world hospital EHR systems</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">patients.component.ts</span> <span class="file-badge-small">patients.component.html</span> <span class="file-badge-small">patient.service.ts</span> <span class="file-badge-small">styles.scss</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 10 of 11 (Case 9 of 10)</div>
+  </div>
+</div>
+
+<!-- PAGE 10 -->
+<div class="page">
+  <!-- Windows 11 Desktop Style Antigravity Window -->
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="#38bdf8"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+        Antigravity IDE &bull; Prompt Clarity &amp; Rewriting &bull; Case #10
+      </div>
+      <div class="win-controls">
+        <div class="win-btn">&#x2212;</div>
+        <div class="win-btn">&#x25A1;</div>
+        <div class="win-btn" style="color: #f85149;">&#x2715;</div>
+      </div>
+    </div>
+
+    <!-- IDE Subbar -->
+    <div class="agy-subbar">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="agy-badge">Prompt Clarity Case #10</span>
+        <span style="color: #c9d1d9; font-weight: 600;">CI/CD & Cloud Deployment: Automated Build Pipeline, Docker & Netlify SPA Hosting</span>
+      </div>
+      <div style="font-family: 'Consolas', monospace; font-size: 9.5px; color: #7d8590;">
+        Antigravity Prompt Rewriting Protocol
+      </div>
+    </div>
+
+    <!-- Window Body: Before vs After Prompt -->
+    <div class="win-content">
+      <div class="prompt-comparison">
+        <!-- Vague Raw Prompt -->
+        <div class="box-raw">
+          <div class="box-header-raw">
+            <span>&#x2717; Original Developer Prompt (Ambiguous / Casual)</span>
+            <span class="badge-issue">Low Clarity</span>
+          </div>
+          <div class="text-raw">"project ko deploy krna h aur test kr lo"</div>
+          <div class="critique-text">
+            <strong style="color: #ff7b72;">Clarity Issue:</strong> Zero Pipeline Details: No CI runner specs, no SPA routing rewrites, no containerization parameters.
+          </div>
+        </div>
+
+        <!-- High-Clarity Rewritten Prompt -->
+        <div class="box-rewritten">
+          <div class="box-header-rewritten">
+            <span>&#x2713; Rewritten High-Clarity Antigravity Prompt (Structured &amp; Deterministic)</span>
+            <span class="badge-improved">100% Deterministic</span>
+          </div>
+          <div class="text-rewritten">Configure the production deployment and automated continuous integration pipeline for CareConnect EHR:
+1. Build GitHub Actions CI workflow (.github/workflows/main.yml):
+   - Set up JDK 21 and run Maven clean verify to run tests and package backend JAR.
+   - Set up Node.js 20 and execute npm run build for Angular 17.
+2. Create multi-stage Dockerfile for containerized Spring Boot backend packaging.
+3. Configure Netlify deployment for the Angular frontend:
+   - Set publish directory to frontend/dist/care-connect-ehr/browser.
+   - Create netlify.toml and public/_redirects with SPA rewrite rule (/* /index.html 200).
+4. Run end-to-end verification script testing authentication, patient search, CPOE order creation, and live site health.</div>
+          <div class="prompt-toolbar">
+            <div>Mode: <strong>Agent</strong> &bull; Context: <strong>EHR Architecture</strong> &bull; Shell: <strong>PowerShell</strong></div>
+            <div style="background: #238636; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Executed in Antigravity</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Activity Output -->
+      <div class="agent-block">
+        <div class="agent-header">
+          <span style="background: #238636; color: white; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-weight: bold;">AGY</span>
+          Resulting Antigravity Tool Activity:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;">
+          <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file .github/workflows/main.yml</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file Dockerfile</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> write_file netlify.toml</span> <span class="tool-tag"><span style="color:#3fb950;">✓</span> run_command npm run build</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Evaluation Panels -->
+  <div class="bottom-row">
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3fb950" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Key Clarity &amp; Architectural Gains
+      </h4>
+      <ul class="clarity-list">
+        <li>Automated dual-stack CI pipeline configured (JDK 21 + Node 20)</li><li>Netlify SPA client-side routing issue resolved via /* -> /index.html rule</li><li>Repeatable containerized Docker build specified for cloud hosting</li>
+      </ul>
+    </div>
+
+    <div class="bottom-card">
+      <h4>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Generated Code Artifacts
+      </h4>
+      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; margin-bottom: 5px;">
+        <span class="file-badge-small">.github/workflows/main.yml</span> <span class="file-badge-small">Dockerfile</span> <span class="file-badge-small">netlify.toml</span> <span class="file-badge-small">_redirects</span> 
+      </div>
+      <div style="font-size: 9px; color: #3fb950; font-weight: 600;">
+        &#x2713; Code compiled without hallucination or regression.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <div>CareConnect EHR &bull; Prompt Clarity &amp; Rewriting Report</div>
+    <div>Slide 11 of 11 (Case 10 of 10)</div>
+  </div>
+</div>
+
+</body>
+</html>

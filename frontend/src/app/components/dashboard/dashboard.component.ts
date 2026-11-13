@@ -995,6 +995,46 @@ import { DashboardStats, MedicalOrder, Patient } from '../../models/ehr.models';
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 640px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem;
+      }
+      .stat-value {
+        font-size: 1.85rem;
+      }
+      .quick-buttons {
+        grid-template-columns: 1fr;
+      }
+      .telemetry-bar {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-page {
+        padding: 0.75rem 0.5rem;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-card {
+        padding: 1rem;
+      }
+      .stat-value {
+        font-size: 2rem;
+      }
+      .header-card {
+        padding: 1rem;
+      }
+      .welcome-heading {
+        font-size: 1.3rem !important;
+      }
+    }
+
   `]
 })
 export class DashboardComponent implements OnInit, OnDestroy {

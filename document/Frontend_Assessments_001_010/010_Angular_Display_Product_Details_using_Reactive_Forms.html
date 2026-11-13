@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>010 Angular Display Product Details using Reactive Forms - Comparison</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&family=Consolas&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: #0b0f14;
+    color: #e6edf3;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative;
+    padding: 14mm 16mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 16px;
+    background-color: #0b0f14;
+    overflow: hidden;
+  }
+
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #21262d;
+    padding-bottom: 10px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .case-tag {
+    background: #0969da;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .module-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0f6fc;
+  }
+
+  .page-num {
+    font-size: 11px;
+    color: #8b949e;
+    font-weight: 500;
+  }
+
+  .comparison-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-grow: 1;
+  }
+
+  /* BEFORE CARD */
+  .card-before {
+    background: #12171f;
+    border: 1.5px solid #da3633;
+    border-left: 5px solid #f85149;
+    border-radius: 8px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-header-before {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .badge-before {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(248, 81, 73, 0.15);
+    border: 1px solid rgba(248, 81, 73, 0.4);
+    color: #ff7b72;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .prompt-text-before {
+    font-family: 'Consolas', monospace;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #ffa198;
+    background: #0d1117;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    margin-bottom: 10px;
+  }
+
+  .critique-box {
+    font-size: 11.5px;
+    color: #c9d1d9;
+    line-height: 1.5;
+  }
+
+  .critique-box strong {
+    color: #ff7b72;
+  }
+
+  /* AFTER CARD */
+  .card-after {
+    background: #12171f;
+    border: 1.5px solid #238636;
+    border-left: 5px solid #3fb950;
+    border-radius: 8px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-header-after {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .badge-after {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(63, 185, 80, 0.15);
+    border: 1px solid rgba(63, 185, 80, 0.4);
+    color: #56d364;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .prompt-text-after {
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    font-size: 11.8px;
+    line-height: 1.58;
+    color: #f0f6fc;
+    background: #0d1117;
+    padding: 14px 16px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    white-space: pre-wrap;
+    word-break: break-word;
+    flex-grow: 1;
+  }
+
+  .improvements-bar {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #21262d;
+    font-size: 11.5px;
+    color: #7ee787;
+    line-height: 1.45;
+  }
+
+  .improvements-bar strong {
+    color: #56d364;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #21262d;
+    padding-top: 8px;
+    font-size: 10px;
+    color: #6e7681;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header-bar">
+    <div class="header-left">
+      <span class="case-tag">010</span>
+      <span class="module-title">Angular Reactive Forms (CPOE Diagnostic Lab Order Requisition Form)</span>
+    </div>
+    <div class="page-num">CareConnect EHR Frontend Assessment</div>
+  </div>
+
+  <div class="comparison-container">
+    <div class="card-before">
+      <div class="card-header-before">
+        <span class="badge-before">&#x2717; BEFORE : BASIC / UNCONTEXTUALIZED PROMPT</span>
+      </div>
+      <div class="prompt-text-before">"reactive form banao product details enter karne ke liye angular me"</div>
+      <div class="critique-box">
+        <strong>Problem &amp; Limitations:</strong> Generic CRUD Form: Misses LOINC diagnostic medical test catalogs, priority dropdowns (STAT/ROUTINE), and clinical validation rules.
+      </div>
+    </div>
+
+    <div class="card-after">
+      <div class="card-header-after">
+        <span class="badge-after">&#x2713; AFTER : CARECONNECT EHR HEALTHCARE CONTEXT PROMPT</span>
+      </div>
+      <div class="prompt-text-after">Architect a Computerized Physician Order Entry (CPOE) Diagnostic Lab Requisition Form using Angular 17 Reactive Forms:
+1. Clinical Context:
+   - Physicians select and order diagnostic laboratory procedures (CBC, Lipid Panel, Metabolic Panel) with clinical priority triage.
+2. Form Structure (FormBuilder):
+   - patientMrn: ['', [Validators.required, Validators.pattern(/^MRN-\d{4}-\d{4}$/)]]
+   - testType: ['LABORATORY', Validators.required]
+   - loincCode: ['', Validators.required] (e.g., '58410-2' for Complete Blood Count)
+   - priority: ['ROUTINE', Validators.required] (ROUTINE, URGENT, STAT)
+   - clinicalIndication: ['', [Validators.required, Validators.minLength(10)]]
+3. Dynamic Validation & Pre-Submission Guard:
+   - If priority is 'STAT', require mandatory justification in clinicalIndication.
+   - Show inline validation errors using accessible form-control states (is-invalid, ng-touched).
+4. Submission Handler:
+   - On valid submit, dispatch OrderDto to OrderService and trigger toast notification with order tracking number.</div>
+      <div class="improvements-bar">
+        <strong>Enterprise Engineering &amp; Project Alignment:</strong> Adapts a generic product form into an authentic CPOE diagnostic lab requisition form with LOINC codes and STAT triage validation.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>CareConnect EHR &bull; 010_Angular_Display_Product_Details_using_Reactive_Forms</div>
+    <div>Strict Side-by-Side Comparison</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -682,6 +682,31 @@ import { Patient } from '../../models/ehr.models';
         align-items: stretch;
       }
     }
+
+    @media (max-width: 640px) {
+      .patients-page {
+        padding: 0.75rem;
+      }
+      .patient-profile-cell {
+        gap: 0.5rem;
+      }
+      .filter-chips {
+        gap: 0.35rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .patients-page {
+        padding: 0.75rem 0.5rem;
+      }
+      .modal-dialog {
+        padding: 1rem;
+      }
+      .form-row {
+        flex-direction: column;
+      }
+    }
+
   `]
 })
 export class PatientListComponent implements OnInit {

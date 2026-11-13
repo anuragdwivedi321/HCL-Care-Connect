@@ -844,6 +844,31 @@ import { InteractionCheckResult, Patient, Prescription } from '../../models/ehr.
         gap: 0;
       }
     }
+
+    @media (max-width: 640px) {
+      .toolbar-search-row {
+        flex-direction: column;
+      }
+      .patient-search-autocomplete,
+      .patient-select-box {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .medications-page {
+        padding: 0.75rem 0.5rem;
+      }
+      .toolbar-header-row {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .sp-name-row {
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+    }
+
   `]
 })
 export class MedicationsComponent implements OnInit {
